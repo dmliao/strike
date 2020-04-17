@@ -1,4 +1,5 @@
-function bresenham_line(x1, y1, x2, y2, callback) {
+// see https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+export const bresenham = (x1, y1, x2, y2, callback) => {
 	// Bresenham's line algorithm
 	x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
 	
