@@ -7,5 +7,16 @@
 <body>
 	<script src="./node_modules/pixi.js/dist/pixi.js"></script>
 	<script type="module" src="./src/app.js"></script>
+	<script type="shader" id="fragment">
+precision mediump float;
+
+varying vec2 vTextureCoord;//The coordinates of the current pixel
+uniform sampler2D uSampler;//The image data
+
+void main(void) {
+   gl_FragColor = texture2D(uSampler, vTextureCoord);
+   gl_FragColor.r = 0.0;
+}
+	</script>
 </body>
 </html>

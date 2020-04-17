@@ -9,7 +9,18 @@ const { stage } = app;
 const renderTexture = PIXI.RenderTexture.create(app.screen.width, app.screen.height);
 
 const renderTextureSprite = new PIXI.Sprite(renderTexture);
-stage.addChild(renderTextureSprite);
+
+const onLoaded = (_loader, res) => {
+	
+	const shader = new PIXI.Filter('', res.shader.data, {});
+	renderTextureSprite.filters = [shader]
+	
+	stage.addChild(renderTextureSprite);
+}
+
+app.loader.add('shader', 'src/shaders/shader.frag')
+.load(onLoaded);
+
 
 app.stage.interactive = true;
 app.stage.on('pointerdown', pointerDown);
