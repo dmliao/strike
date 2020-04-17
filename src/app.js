@@ -1,5 +1,6 @@
 
 import Paint from './tools/paint.js';
+import Eraser from './tools/eraser.js';
 
 const app = new PIXI.Application();
 document.body.appendChild(app.view);
@@ -17,21 +18,33 @@ app.stage.on('pointermove', pointerMove);
 
 // setup brush tool
 let paintTool = new Paint();
+let eraserTool = new Eraser();
+let currentTool = paintTool;
 
 let dragging = false;
 
+// temporary tool switching
+document.addEventListener('keypress', (ev) => {
+	if (currentTool === paintTool) {
+		currentTool = eraserTool;
+	} else {
+		currentTool = paintTool;
+	}
+	console.log(currentTool);
+})
+
 function pointerMove(event) {
 	if (dragging) {
-		paintTool.move(app.renderer, renderTexture, event);
+		currentTool.move(app.renderer, renderTexture, event);
 	}
 }
 
 function pointerDown(event) {
 	dragging = true;
-	paintTool.begin(app.renderer, renderTexture, event);
+	currentTool.begin(app.renderer, renderTexture, event);
 }
 
 function pointerUp(event) {
 	dragging = false;
-	paintTool.end(app.renderer, renderTexture, event);
+	currentTool.end(app.renderer, renderTexture, event);
 }

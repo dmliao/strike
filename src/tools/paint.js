@@ -7,7 +7,7 @@ class Paint extends Tool {
 		super();
 		this.previousPoint = null;
 		this.brushSize = 10;
-		this.brushShape = "flat"; // flat or round
+		this.brushShape = "flat"; // square or flat or round
 		this.color = 0xffffff;
 
 		// special brush params
@@ -29,10 +29,14 @@ class Paint extends Tool {
 
 		this.brush.clear();
 		this.brush.beginFill(this.color);
-		if (this.brushSize > 1 && this.brushShape === "round") {
+		if (this.brushSize === 1) {
+			this.brush.drawRect(0, 0, 1, 1);
+		} else if (this.brushSize > 1 && this.brushShape === "round") {
 			this.brush.drawCircle(0, 0, this.brushSize / 2);
-		} else {
+		} else if (this.brushSize > 1 && this.brushShape === "flat") {
 			this.brush.drawRect(-Math.ceil(this.brushSize/4), -Math.ceil(this.brushSize/2), this.brushSize/2, this.brushSize);
+		} else {
+			this.brush.drawRect(-Math.ceil(this.brushSize/2), -Math.ceil(this.brushSize/2), this.brushSize, this.brushSize);
 		}
 		this.brush.endFill();
 	}
@@ -44,7 +48,6 @@ class Paint extends Tool {
 	move(renderer, renderTexture, event) {
 		this.brush.position.copyFrom(event.data.global);
 		let newPoint = new PIXI.Point(this.brush.position.x, this.brush.position.y);
-		renderer.render(this.brush, renderTexture, false, null, false);
 
 		if (this.previousPoint) {
 			if (this.shouldRotateBrush) {
