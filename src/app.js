@@ -1,4 +1,6 @@
 
+import store from './foundation/store.js';
+
 import Paint from './tools/paint.js';
 import Eraser from './tools/eraser.js';
 
@@ -30,18 +32,24 @@ app.stage.on('pointermove', pointerMove);
 // setup brush tool
 let paintTool = new Paint();
 let eraserTool = new Eraser();
+
 let currentTool = paintTool;
+
+store.update('tool', paintTool);
+store.subscribe('tool', (newTool) => {
+	currentTool = newTool;
+	console.log(currentTool);
+})
 
 let dragging = false;
 
 // temporary tool switching
 document.addEventListener('keypress', (ev) => {
-	if (currentTool === paintTool) {
-		currentTool = eraserTool;
+	if (store.get('tool') === paintTool) {
+		store.update('tool', eraserTool)
 	} else {
-		currentTool = paintTool;
+		store.update('tool', paintTool)
 	}
-	console.log(currentTool);
 })
 
 function pointerMove(event) {
