@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "pixi.js": "^5.2.1"
+    "htm": "^3.0.4",
+    "pixi.js": "^5.2.1",
+    "preact": "^10.4.0"
   }
 }

@@ -1,8 +1,18 @@
 
+import { html, render } from '/node_modules/htm/preact/standalone.mjs'
+
 import store from './foundation/store.js';
 
 import Paint from './tools/paint.js';
 import Eraser from './tools/eraser.js';
+
+import { Palette } from './view/palette.js';
+
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+PIXI.settings.RENDER_OPTIONS.antialias = false;
+PIXI.settings.ROUND_PIXELS = true;
+PIXI.settings.PRECISION_FRAGMENT = PIXI.PRECISION.HIGH;
+PIXI.settings.MIPMAP_TEXTURES = PIXI.MIPMAP_MODES.OFF;
 
 const app = new PIXI.Application();
 document.body.appendChild(app.view);
@@ -13,15 +23,22 @@ const renderTexture = PIXI.RenderTexture.create(app.screen.width, app.screen.hei
 const renderTextureSprite = new PIXI.Sprite(renderTexture);
 
 const onLoaded = (_loader, res) => {
-	
-	const shader = new PIXI.Filter('', res.shader.data, {});
+	const texture = res.palette.texture;
+		
+	const uniforms = {
+		palette: texture, 
+		swatchSize: 8
+	}
+		
+	const shader = new PIXI.Filter('', res.shader.data, uniforms);
 	renderTextureSprite.filters = [shader]
 	
 	stage.addChild(renderTextureSprite);
 }
 
 app.loader.add('shader', 'src/shaders/shader.frag')
-.load(onLoaded);
+	.add('palette', 'src/palette/dither-palette.png')
+	.load(onLoaded);
 
 
 app.stage.interactive = true;
@@ -38,7 +55,10 @@ let currentTool = paintTool;
 store.update('tool', paintTool);
 store.subscribe('tool', (newTool) => {
 	currentTool = newTool;
-	console.log(currentTool);
+})
+
+store.subscribe('color', (color) => {
+	paintTool.updateBrush({ color });
 })
 
 let dragging = false;
@@ -67,3 +87,5 @@ function pointerUp(event) {
 	dragging = false;
 	currentTool.end(app.renderer, renderTexture, event);
 }
+
+render(html`<div><${Palette} /></div>`, document.getElementById('ui'));
