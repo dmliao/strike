@@ -7,6 +7,7 @@ import Paint from './tools/paint.js';
 import Eraser from './tools/eraser.js';
 
 import { Palette } from './view/palette.js';
+import Fill from './tools/fill.js';
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.RENDER_OPTIONS.antialias = false;
@@ -17,6 +18,9 @@ PIXI.settings.MIPMAP_TEXTURES = PIXI.MIPMAP_MODES.OFF;
 const app = new PIXI.Application();
 document.body.appendChild(app.view);
 const { stage } = app;
+
+// dummy
+window.stage = stage;
 
 const renderTexture = PIXI.RenderTexture.create(app.screen.width, app.screen.height);
 
@@ -49,6 +53,7 @@ app.stage.on('pointermove', pointerMove);
 // setup brush tool
 let paintTool = new Paint();
 let eraserTool = new Eraser();
+let fillTool = new Fill();
 
 let currentTool = paintTool;
 
@@ -67,6 +72,8 @@ let dragging = false;
 document.addEventListener('keypress', (ev) => {
 	if (store.get('tool') === paintTool) {
 		store.update('tool', eraserTool)
+	} else if (store.get('tool') === eraserTool) {
+		store.update('tool', fillTool)
 	} else {
 		store.update('tool', paintTool)
 	}
