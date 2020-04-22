@@ -11,15 +11,15 @@ class Fill extends Tool {
 			this.color = color;
 		});
 	}
-	begin(renderer, renderTexture, event) {
+	begin(renderer, renderTexture, event, viewport) {
 		// nothing
 	}
 
-	move(renderer, renderTexture, event) {
+	move(renderer, renderTexture, event, viewport) {
 		// called when dragging the mouse
 	}
 
-	end(renderer, renderTexture, event) {
+	end(renderer, renderTexture, event, viewport) {
 		// flood fill
 		function toColor(num) {
 			num >>>= 0;
@@ -33,7 +33,7 @@ class Fill extends Tool {
 		const splitColor = toColor(this.color);
 
 		// we don't have any alpha support in this tool, so we can automatically set alpha to max, which is 255.
-		flood_fill(renderer, renderTexture, event.data.global.x, event.data.global.y, splitColor[0], splitColor[1], splitColor[2], 255);
+		flood_fill(renderer, renderTexture, this.getX(event, viewport), this.getY(event, viewport), splitColor[0], splitColor[1], splitColor[2], 255);
 	}
 }
 

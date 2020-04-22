@@ -8,8 +8,6 @@ class Artwork {
 		this.app.resizeTo = element;
 		this.app.resize();
 
-		console.log(Viewport.Viewport)
-
 		// create viewport
 		this.viewport = new Viewport.Viewport({
 			screenWidth: window.innerWidth,
@@ -34,6 +32,7 @@ class Artwork {
 		this.currentTool = tools.get(store.get('tool'));
 		store.subscribe('tool', (newTool) => {
 			this.currentTool = tools.get(newTool);
+			console.log(this.currentTool)
 			if (newTool === toolId.MOVE) {
 				this.activateMoveViewport();
 			} else {
@@ -92,7 +91,7 @@ class Artwork {
 			return;
 		}
 		if (this.dragging) {
-			this.currentTool.move(this.app.renderer, this.renderTexture, event);
+			this.currentTool.move(this.app.renderer, this.renderTexture, event, this.viewport);
 		}
 	}
 
@@ -101,7 +100,7 @@ class Artwork {
 			return;
 		}
 		this.dragging = true;
-		this.currentTool.begin(this.app.renderer, this.renderTexture, event);
+		this.currentTool.begin(this.app.renderer, this.renderTexture, event, this.viewport);
 	}
 
 	pointerUp = (event) => {
@@ -109,7 +108,12 @@ class Artwork {
 			return;
 		}
 		this.dragging = false;
-		this.currentTool.end(this.app.renderer, this.renderTexture, event);
+		
+		if (!this.renderTextureSprite) {
+			return;
+		}
+
+		this.currentTool.end(this.app.renderer, this.renderTexture, event, this.viewport);
 	}
 }
 

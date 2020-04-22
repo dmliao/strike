@@ -1,11 +1,16 @@
 
 export const flood_fill = (renderer, renderTexture, start_x, start_y, fill_r, fill_g, fill_b, fill_a) => {
 	
+	start_x = Math.floor(start_x);
+	start_y = Math.floor(start_y);
+
 	// algorithm taken from jspaint
 	const stack = [[start_x, start_y]];
 	const c_width = renderTexture.width;
 	const c_height = renderTexture.height;
+	
 	const id = renderer.extract.pixels(renderTexture);
+
 	let pixel_pos = (start_y*c_width + start_x) * 4;
 	const start_r = id[pixel_pos+0];
 	const start_g = id[pixel_pos+1];

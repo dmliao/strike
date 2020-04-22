@@ -41,12 +41,14 @@ class Paint extends Tool {
 		this.brush.endFill();
 	}
 
-	begin(renderer, renderTexture, event) {
-		this.move(renderer, renderTexture, event);
+	begin(renderer, renderTexture, event, viewport) {
+		this.move(renderer, renderTexture, event, viewport);
 	}
 
-	move(renderer, renderTexture, event) {
-		this.brush.position.copyFrom(event.data.global);
+	move(renderer, renderTexture, event, viewport) {
+		this.brush.position.x = this.getX(event, viewport);
+		this.brush.position.y = this.getY(event, viewport);
+		
 		let newPoint = new PIXI.Point(this.brush.position.x, this.brush.position.y);
 
 		if (this.previousPoint) {
@@ -63,8 +65,9 @@ class Paint extends Tool {
 		this.previousPoint = newPoint;
 	}
 
-	end(renderer, renderTexture, event) {
-		this.brush.position.copyFrom(event.data.global);
+	end(renderer, renderTexture, event, viewport) {
+		this.brush.position.x = this.getX(event, viewport);
+		this.brush.position.y = this.getY(event, viewport);
 		renderer.render(this.brush, renderTexture, false, null, false);
 		this.previousPoint = null;
 	}
