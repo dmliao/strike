@@ -6,7 +6,9 @@ class Artwork {
 	constructor(element) {
 		this.app = new PIXI.Application();
 		this.app.resizeTo = element;
-		this.app.resize();
+
+		// TODO: this is creating scrollbars. Do we still need this?
+		// this.app.resize();
 
 		// create viewport
 		this.viewport = new Viewport.Viewport({
