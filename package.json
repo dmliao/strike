@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "htm": "^3.0.4",
+    "pixi-viewport": "^4.11.0",
     "pixi.js": "^5.2.1",
     "preact": "^10.4.0"
   }

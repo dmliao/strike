@@ -3,6 +3,10 @@ import { html, render, useState } from '/node_modules/htm/preact/standalone.mjs'
 import store from '../foundation/store.js';
 import { colors } from '../palette/raw_colors.js';
 
+// TODO: switch over swatch and palette to be a pixi app, where
+// the swatches are https://pixijs.download/dev/docs/PIXI.TilingSprite.html instances and 
+// the textures are cut from the palette via http://pixijs.download/dev/docs/PIXI.Texture.html's frame
+// we can make it interactive via https://pixijs.io/examples/#/interaction/click.js
 const Swatch = (props) => {
 	const [isActive, setIsActive] = useState(store.get('color') === props.color);
 
