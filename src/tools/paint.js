@@ -2,6 +2,8 @@ import Tool from './base.js';
 import { bresenham } from '../utils/bresenham.js';
 import { point_direction } from '../utils/point_direction.js';
 
+import storeSingleton from "../foundation/store.js";
+
 class Paint extends Tool {
 	constructor() {
 		super();
@@ -18,7 +20,18 @@ class Paint extends Tool {
 				
 		// prepare circle texture, that will be our brush
 		this.brush = new PIXI.Graphics();
+
+		this.subscribe();
 		this.updateBrush();
+	}
+
+	subscribe() {
+		this.brushSize = storeSingleton.get('paint.size') || 1;
+		storeSingleton.subscribe('paint.size', (newSize) => {
+			this.updateBrush({
+				size: newSize
+			});
+		})
 	}
 
 	updateBrush({size, shape, color} = {}) {
@@ -52,7 +65,7 @@ class Paint extends Tool {
 		let newPoint = new PIXI.Point(this.brush.position.x, this.brush.position.y);
 
 		if (this.previousPoint) {
-			if (this.shouldRotateBrush) {
+			if (this.shouldRotateBrush && this.brushSize > 1) {
 				this.brush.angle = point_direction(this.previousPoint.x, this.previousPoint.y, newPoint.x, newPoint.y);
 			}
 			bresenham(this.previousPoint.x, this.previousPoint.y, newPoint.x, newPoint.y, (x, y) => {

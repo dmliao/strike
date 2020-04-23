@@ -11,7 +11,7 @@ class Tools {
 			FILL: new Fill(),
 		}
 	}
-	get = (toolName) => {
+	get(toolName) {
 		return this.toolObjects[toolName];
 	}
 }

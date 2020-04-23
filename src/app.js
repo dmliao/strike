@@ -1,16 +1,8 @@
-
 import { html, useEffect } from '/node_modules/htm/preact/standalone.mjs'
 
 import store from './foundation/store.js';
 
-import Paint from './tools/paint.js';
-import Eraser from './tools/eraser.js';
-
-import { Palette } from './view/palette.js';
-import Fill from './tools/fill.js';
-
 import Layout from './view/layout.js';
-
 import Artwork from './frame/artwork.js';
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;

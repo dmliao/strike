@@ -60,11 +60,63 @@ body {
 	color: #000;
 }
 
-.tool-button.active {
+.tool-button.active,
+.tool-button:hover,
+.tool-button:active {
 	background-color: #000;
 	border: 1px solid #FFF;
 }
 
-.tool-button.active i {
+.tool-button.active i,
+.tool-button:hover i,
+.tool-button:active i {
 	color: #FFF;
+}
+
+.vertical-slider {
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+input[type="range"].range
+{
+     cursor: pointer;
+	 width: 120px !important;
+	 height: 24px;
+     -webkit-appearance: none;
+     z-index: 200;
+     border: 1px solid #fff;
+     background-color: #000;
+}
+
+/*customised range slider icon*/ input[type="range"].range::-webkit-slider-thumb
+{
+	-webkit-appearance: none;
+	width: 24px;
+	height: 24px;
+	background-color: #FFF;
+}
+
+/* set range from 1 - 0 vertically (highest on top) */ .vertical
+{
+	-webkit-transform:rotate(270deg);
+	-moz-transform:rotate(270deg);
+	-o-transform:rotate(270deg);
+	-ms-transform:rotate(270deg);
+	transform:rotate(270deg);
+}
+
+#brush-options {
+	display: flex;
+	flex-direction: column;
+	padding: 20px 0;
+}
+
+label {
+	font-family: sans-serif;
+	color: #FFF;
+	text-align: center;
 }

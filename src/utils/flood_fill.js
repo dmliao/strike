@@ -1,4 +1,3 @@
-
 export const flood_fill = (renderer, renderTexture, start_x, start_y, fill_r, fill_g, fill_b, fill_a) => {
 	
 	start_x = Math.floor(start_x);

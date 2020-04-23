@@ -78,9 +78,9 @@ class Artwork {
 		this.viewport.addChild(this.renderTextureSprite);
 
 		this.renderTextureSprite.interactive = true;
-		this.renderTextureSprite.on('pointerdown', this.pointerDown);
-		this.renderTextureSprite.on('pointerup', this.pointerUp);
-		this.renderTextureSprite.on('pointermove', this.pointerMove);
+		this.renderTextureSprite.on('pointerdown', this.pointerDown.bind(this));
+		this.renderTextureSprite.on('pointerup', this.pointerUp.bind(this));
+		this.renderTextureSprite.on('pointermove', this.pointerMove.bind(this));
 
 		if (this.shader) {
 			this.renderTextureSprite.filters = [this.shader]
@@ -88,7 +88,7 @@ class Artwork {
 
 	}
 
-	pointerMove = (event) => {
+	pointerMove (event) {
 		if (!this.currentTool) {
 			return;
 		}
@@ -97,7 +97,7 @@ class Artwork {
 		}
 	}
 
-	pointerDown = (event) => {
+	pointerDown (event) {
 		if (!this.currentTool) {
 			return;
 		}
@@ -105,7 +105,7 @@ class Artwork {
 		this.currentTool.begin(this.app.renderer, this.renderTexture, event, this.viewport);
 	}
 
-	pointerUp = (event) => {
+	pointerUp (event) {
 		if (!this.currentTool) {
 			return;
 		}
