@@ -1,11 +1,15 @@
 precision mediump float;
 
 varying vec2 vTextureCoord;//The coordinates of the current pixel
+
 uniform sampler2D uSampler;//The image data
+
+// need highp to avoid compiler issues
+// see https://www.html5gamedevs.com/topic/42235-how-to-get-correct-fragment-shader-uv-in-pixi-50-rc0/
+uniform highp vec4 inputSize;
 
 uniform sampler2D palette;
 uniform float swatchSize;
-
 
 // Currently, this is a dummy shader that just removes red.
 // We want to eventually sample a palette, and then use that 
@@ -14,18 +18,18 @@ void main(void) {
 	float value = texture2D(uSampler, vTextureCoord).r;
 	
 	// TODO: replace these with uniforms
-	float appWidth = 800.0;
-	float appHeight = 600.0;
-
-	// TODO: replace these with uniforms
 	float paletteWidth = 128.0;
 	float paletteHeight = 8.0;
 
-	float pixelX = vTextureCoord.x * appWidth;
-	float pixelY = vTextureCoord.y * appHeight;
+	// convert normalized input coord to css pixel
+	// https://github.com/pixijs/pixi.js/wiki/v5-Creating-filters#conversion-functions
+	vec2 cssPixel = vTextureCoord * inputSize.xy;
 
-	float positionXinSwatch = floor(mod(pixelX, swatchSize));
-	float positionYinSwatch = floor(mod(pixelY, swatchSize));
+	float pixelX = cssPixel.x;
+	float pixelY = cssPixel.y;
+
+	float positionXinSwatch = mod(pixelX, swatchSize);
+	float positionYinSwatch = mod(pixelY, swatchSize);
 
 	// we map the greyscale r value to the correct swatch by first converting the 
 	// scale from [0.0, 0.1] to [0, 256] and dividing that out by the number of colors / swatches we have.

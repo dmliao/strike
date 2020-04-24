@@ -7,15 +7,14 @@ class Artwork {
 
 	constructor(element) {
 		this.undo = new UndoStack(this);
-		this.app = new PIXI.Application();
-		this.app.resizeTo = element;
-
-		// TODO: this is creating scrollbars. Do we still need this?
-		// this.app.resize();
+		this.app = new PIXI.Application({
+			width: element.offsetWidth,
+			height: element.offsetHeight
+		});
+		// this.app.resizeTo = element;
 
 		// create viewport
 		this.viewport = new Viewport.Viewport({
-			
 			interaction: this.app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
 		})
 
@@ -43,7 +42,7 @@ class Artwork {
 
 		element.appendChild(this.app.view);
 
-		this.createSurface(400, 400)
+		this.createSurface(800, 600)
 	}
 
 	getViewport() {
@@ -70,6 +69,8 @@ class Artwork {
 			swatchSize: 8
 		}
 
+		console.log(uniforms)
+
 		this.shader = new PIXI.Filter('', res.shader.data, uniforms);
 		this.renderTextureSprite.filters = [this.shader]
 	}
@@ -79,6 +80,7 @@ class Artwork {
 		this.renderTextureSprite = new PIXI.Sprite(this.renderTexture);
 
 		this.viewport.addChild(this.renderTextureSprite);
+		// this.app.stage.addChild(this.renderTextureSprite);
 
 		this.renderTextureSprite.interactive = true;
 		this.renderTextureSprite.on('pointerdown', this.pointerDown.bind(this));
