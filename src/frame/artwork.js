@@ -1,9 +1,12 @@
 import store from '../foundation/store.js';
 import tools, { toolId } from './tools.js';
 
+import UndoStack from './undo_stack.js';
+
 class Artwork {
 
 	constructor(element) {
+		this.undo = new UndoStack(this);
 		this.app = new PIXI.Application();
 		this.app.resizeTo = element;
 
@@ -12,11 +15,7 @@ class Artwork {
 
 		// create viewport
 		this.viewport = new Viewport.Viewport({
-			screenWidth: window.innerWidth,
-			screenHeight: window.innerHeight,
-			worldWidth: 1000,
-			worldHeight: 1000,
-
+			
 			interaction: this.app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
 		})
 
@@ -45,6 +44,10 @@ class Artwork {
 		element.appendChild(this.app.view);
 
 		this.createSurface(400, 400)
+	}
+
+	getViewport() {
+		return this.viewport;
 	}
 
 	activateMoveViewport() {	
@@ -82,6 +85,8 @@ class Artwork {
 		this.renderTextureSprite.on('pointerup', this.pointerUp.bind(this));
 		this.renderTextureSprite.on('pointermove', this.pointerMove.bind(this));
 
+		this.undo.reset();
+
 		if (this.shader) {
 			this.renderTextureSprite.filters = [this.shader]
 		}
@@ -93,7 +98,7 @@ class Artwork {
 			return;
 		}
 		if (this.dragging) {
-			this.currentTool.move(this.app.renderer, this.renderTexture, event, this.viewport);
+			this.currentTool.move(this.app.renderer, this.renderTexture, event, this);
 		}
 	}
 
@@ -102,11 +107,14 @@ class Artwork {
 			return;
 		}
 		this.dragging = true;
-		this.currentTool.begin(this.app.renderer, this.renderTexture, event, this.viewport);
+		this.currentTool.begin(this.app.renderer, this.renderTexture, event, this);
 	}
 
 	pointerUp (event) {
 		if (!this.currentTool) {
+			return;
+		}
+		if (!this.dragging) {
 			return;
 		}
 		this.dragging = false;
@@ -115,7 +123,28 @@ class Artwork {
 			return;
 		}
 
-		this.currentTool.end(this.app.renderer, this.renderTexture, event, this.viewport);
+		this.currentTool.end(this.app.renderer, this.renderTexture, event, this);
+	}
+
+	setToSnapshot(texture) {
+		const newTextureSprite = new PIXI.Sprite(texture);
+		this.app.renderer.render(newTextureSprite, this.renderTexture, true, null, false);
+	}
+	
+	addUndoable(toolName, op, createSnapshot) {
+		this.undo.addUndoable(toolName, op, createSnapshot);
+	}
+
+	applySavedOperation(op) {
+		const tool = tools.get(op.toolName);
+		if (!tool) {
+			console.log('Operation had invalid tool: ', op);
+			return;
+		}
+		
+		// TODO: apply saved operation per tool.
+		console.log(op.operation);
+		tool.applyOperation(op.operation, this.app.renderer, this.renderTexture);
 	}
 }
 

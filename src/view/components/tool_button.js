@@ -8,7 +8,11 @@ export const IconButton = (props) => {
 	if (props.active) {
 		buttonClass += ' active';
 	}
-	return (html`<button class=${buttonClass} onclick=${props.onclick}><i class=${props.icon} /></button>`)
+	if (props.disabled) {
+		buttonClass += ' disabled';
+	}
+
+	return (html`<button disabled=${props.disabled} class=${buttonClass} onclick=${props.onclick}><i class=${props.icon} /></button>`)
 }
 
 export const ToolButton = (props) => {

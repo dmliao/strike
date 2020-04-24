@@ -1,10 +1,27 @@
 import { html, render, useState, useEffect } from '/node_modules/htm/preact/standalone.mjs';
 import { IconButton } from '../components/tool_button.js';
+import store from '../../foundation/store.js';
 
 const UndoRedo = (props) => {
+	let [canUndo, setCanUndo] = useState(store.get('can_undo'));
+	let [canRedo, setCanRedo] = useState(store.get('can_redo'));
+
+	useEffect(() => {
+		store.subscribe('can_undo', (can) => {
+			setCanUndo(can);
+		})
+		store.subscribe('can_redo', (can) => {
+			setCanRedo(can);
+		})
+	}, []);
+
 	return (html`<div>
-		<${IconButton} icon="icon-reply" />
-		<${IconButton} icon="icon-forward" />
+		<${IconButton} disabled=${!canUndo} icon="icon-reply" onclick=${() => {
+			store.publish('undo');
+		}} />
+		<${IconButton} disabled=${!canRedo} icon="icon-forward" onclick=${() => {
+			store.publish('redo');
+		}} />
 	</div>`)
 }
 

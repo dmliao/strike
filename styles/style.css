@@ -36,6 +36,7 @@ body {
 	grid-area: header;
 	background-color: #000;
 	border-bottom: 1px solid #FFF;
+	display: flex;
 }
 
 #sidebar {
@@ -71,6 +72,14 @@ body {
 .tool-button:hover i,
 .tool-button:active i {
 	color: #FFF;
+}
+
+.tool-button.disabled {
+	background-color: #FFF!important;
+}
+
+.tool-button.disabled i { 
+	color: #ccc!important;
 }
 
 .vertical-slider {

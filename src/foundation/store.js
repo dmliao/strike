@@ -2,6 +2,7 @@ class Store {
 	constructor() {
 		this.data = {};
 		this.callbacks = {};
+		this.messages = {};
 	}
 
 	get(path) {
@@ -49,6 +50,24 @@ class Store {
 
 		for (const callback of this.callbacks[path]) {
 			callback(this.get(path))
+		}
+	}
+
+	// action ferrying
+	listen(message, callback) {
+		if (!this.messages[message]) {
+			this.messages[message] = [];
+		}
+		this.messages[message].push(callback);
+	}
+
+	publish(message, args) {
+		if (!this.messages[message]) {
+			return;
+		}
+
+		for (const callback of this.messages[message]) {
+			callback(args)
 		}
 	}
 }

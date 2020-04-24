@@ -15,10 +15,6 @@ PIXI.settings.MIPMAP_TEXTURES = PIXI.MIPMAP_MODES.OFF;
 
 store.update('tool', 'PAINT');
 
-store.subscribe('color', (color) => {
-	paintTool.updateBrush({ color });
-})
-
 // temporary tool switching
 document.addEventListener('keypress', (ev) => {
 	if (store.get('tool') === 'PAINT') {

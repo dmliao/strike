@@ -2,6 +2,7 @@ import { html, render, useState } from '/node_modules/htm/preact/standalone.mjs'
 
 import { ToolButton } from './components/tool_button.js'
 import { toolId } from '../frame/tools.js'
+import { Palette } from './palette.js'
 
 import Toolbox from './header/toolbox.js'
 import UndoRedo from './sidebar/undo_redo.js'
@@ -12,6 +13,7 @@ const Layout = (props) => {
 	<main id="app">
 		<div id="header">
 			<${Toolbox} />
+			<${Palette} />
 		</div>
 		<div id="sidebar">
 			<${BrushOptions} />

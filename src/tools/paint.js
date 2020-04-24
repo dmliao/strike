@@ -3,6 +3,7 @@ import { bresenham } from '../utils/bresenham.js';
 import { point_direction } from '../utils/point_direction.js';
 
 import storeSingleton from "../foundation/store.js";
+import { toolId } from '../frame/tools.js';
 
 class Paint extends Tool {
 	constructor() {
@@ -20,9 +21,12 @@ class Paint extends Tool {
 				
 		// prepare circle texture, that will be our brush
 		this.brush = new PIXI.Graphics();
+		this.toolType = toolId.PAINT;
 
 		this.subscribe();
 		this.updateBrush();
+
+		this.stroke = [];
 	}
 
 	subscribe() {
@@ -32,6 +36,10 @@ class Paint extends Tool {
 				size: newSize
 			});
 		})
+
+		storeSingleton.subscribe('color', (color) => {
+			this.updateBrush({ color });
+		})
 	}
 
 	updateBrush({size, shape, color} = {}) {
@@ -40,49 +48,99 @@ class Paint extends Tool {
 		this.color = color || this.color;
 		this.brush.angle = 0;
 
+		this._updateBrushTemporary(this.brushSize, this.brushShape, this.color);
+	}
+
+	_updateBrushTemporary(size, shape, color) {
 		this.brush.clear();
-		this.brush.beginFill(this.color);
-		if (this.brushSize === 1) {
+		this.brush.beginFill(color);
+		if (size === 1) {
 			this.brush.drawRect(0, 0, 1, 1);
-		} else if (this.brushSize > 1 && this.brushShape === "round") {
-			this.brush.drawCircle(0, 0, this.brushSize / 2);
-		} else if (this.brushSize > 1 && this.brushShape === "flat") {
-			this.brush.drawRect(-Math.ceil(this.brushSize/4), -Math.ceil(this.brushSize/2), this.brushSize/2, this.brushSize);
+		} else if (size > 1 && shape === "round") {
+			this.brush.drawCircle(0, 0, size / 2);
+		} else if (size > 1 && shape === "flat") {
+			this.brush.drawRect(-Math.ceil(size/4), -Math.ceil(size/2), size/2, size);
 		} else {
-			this.brush.drawRect(-Math.ceil(this.brushSize/2), -Math.ceil(this.brushSize/2), this.brushSize, this.brushSize);
+			this.brush.drawRect(-Math.ceil(size/2), -Math.ceil(size/2), size, size);
 		}
 		this.brush.endFill();
 	}
 
-	begin(renderer, renderTexture, event, viewport) {
-		this.move(renderer, renderTexture, event, viewport);
+	begin(renderer, renderTexture, event, artwork) {
+		this.stroke = []
+		this.move(renderer, renderTexture, event, artwork);
 	}
 
-	move(renderer, renderTexture, event, viewport) {
-		this.brush.position.x = this.getX(event, viewport);
-		this.brush.position.y = this.getY(event, viewport);
+	move(renderer, renderTexture, event, artwork) {
+		const viewport = artwork.getViewport();
 		
-		let newPoint = new PIXI.Point(this.brush.position.x, this.brush.position.y);
+		let newPoint = new PIXI.Point(this.getX(event, viewport), this.getY(event, viewport));
 
 		if (this.previousPoint) {
 			if (this.shouldRotateBrush && this.brushSize > 1) {
 				this.brush.angle = point_direction(this.previousPoint.x, this.previousPoint.y, newPoint.x, newPoint.y);
 			}
 			bresenham(this.previousPoint.x, this.previousPoint.y, newPoint.x, newPoint.y, (x, y) => {
-				this.brush.position.x = x;
-				this.brush.position.y = y;
-				renderer.render(this.brush, renderTexture, false, null, false);
+				this._strokePoint(renderer, renderTexture, x, y);
 			});
 		}
+
+		this.stroke.push({
+			x: newPoint.x,
+			y: newPoint.y,
+			size: this.brushSize,
+			angle: this.brush.angle,
+			shape: this.brushShape,
+			color: this.color,
+		});
 
 		this.previousPoint = newPoint;
 	}
 
-	end(renderer, renderTexture, event, viewport) {
-		this.brush.position.x = this.getX(event, viewport);
-		this.brush.position.y = this.getY(event, viewport);
+	_strokePoint(renderer, renderTexture, x, y) {
+		this.brush.position.x = x;
+		this.brush.position.y = y;
+
 		renderer.render(this.brush, renderTexture, false, null, false);
+	}
+
+	end(renderer, renderTexture, event, artwork) {
+		const viewport = artwork.getViewport();
+
+		let x = this.getX(event, viewport);
+		let y = this.getY(event, viewport);
+
+		this.stroke.push({
+			x: x,
+			y: y,
+			size: this.brushSize,
+			angle: this.brush.angle,
+			shape: this.brushSize,
+			color: this.color,
+		});
+
+		this._strokePoint(renderer, renderTexture, x, y);
 		this.previousPoint = null;
+
+		artwork.addUndoable(this.toolType, this.stroke);
+	}
+
+	applyOperation(operation, renderer, renderTexture) {
+		let prev = undefined;
+
+		// should be a stroke object
+		for (let point of operation) {
+			this._updateBrushTemporary(point.size, point.shape, point.color);
+			if (prev) {
+				this.brush.angle = point.angle;
+				bresenham(prev.x, prev.y, point.x, point.y, (x, y) => {
+					this._strokePoint(renderer, renderTexture, x, y);
+				});
+			}
+
+			prev = point;
+		}
+		this.updateBrush();
 	}
 }
 
