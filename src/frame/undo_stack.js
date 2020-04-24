@@ -48,29 +48,37 @@ class UndoStack {
 		store.update('can_redo', this.canRedo());
 	}
 
+	_pruneSnapshots() {
+		if (this.snapshotStack.length && this.currentOp < this.operationStack.length - 1) {
+			// remove everything on the redo stack. This means clobbering any snapshots whose
+			// indexes are past the currentOp index.
+			console.log('pruning snapshot stack', this.currentOp);
+			let cutOffpoint = this.snapshotStack.length;
+			for (let i = 0; i < this.snapshotStack.length; i++) {
+				const snapshot = this.snapshotStack[this.snapshotStack.length - 1 - i];
+				console.log('checking to prune', snapshot.index)
+				if (snapshot.index <= this.currentOp) {
+					console.log('we should break')
+					break;
+				}
+				console.log('setting cut off point ', i)
+				cutOffpoint = this.snapshotStack.length - 1 - i;
+			}
+			console.log('cutoffpoint', cutOffpoint);
+
+			this.snapshotStack = this.snapshotStack.slice(0, cutOffpoint);
+		}
+	}
+
 	_addSnapshot() {
 		if (!this.artwork.renderTexture) {
 			return;
 		}
 		
-		if (this.snapshotStack.length && this.currentOp < this.operationStack.length) {
-			// remove everything on the redo stack. This means clobbering any snapshots whose
-			// indexes are past the currentOp index.
-			let cutOffpoint = this.snapshotStack.length;
-			for (let i = 0; i < this.snapshotStack.length; i++) {
-				const snapshot = this.snapshotStack[this.snapshotStack.length - 1 - i];
-				if (snapshot.index <= this.currentOp) {
-					break;
-				}
-				cutOffpoint = i;
-			}
-
-			this.snapshotStack = this.snapshotStack.slice(0, cutOffpoint);
-		}
-		
 		const snapshotTexture = PIXI.RenderTexture.create(this.artwork.renderTexture.width, this.artwork.renderTexture.height);
 		const existingSprite = new PIXI.Sprite(this.artwork.renderTexture);
 		this.artwork.app.renderer.render(existingSprite, snapshotTexture, true, null, false);
+		console.log('creating new snapshot', this.snapshotStack)
 		this.snapshotStack.push({
 			// TODO: we need to do a better job of this.
 			texture: snapshotTexture,
@@ -84,10 +92,8 @@ class UndoStack {
 		if (lastOperationWithSnapshot + this.operationsPerSnapshot < this.currentOp) {
 			createSnapshot = true;
 		}
-		
-		if (createSnapshot) {
-			this._addSnapshot();
-		}
+
+		this._pruneSnapshots();
 
 		// clobber the redo stack.
 		this.operationStack = this.operationStack.slice(0, this.currentOp + 1);
@@ -98,6 +104,10 @@ class UndoStack {
 		});
 
 		this.currentOp = this.operationStack.length - 1;
+		
+		if (createSnapshot) {
+			this._addSnapshot();
+		}
 
 		store.update('can_undo', this.canUndo());
 		store.update('can_redo', this.canRedo());
@@ -124,7 +134,9 @@ class UndoStack {
 		this.artwork.setToSnapshot(targetSnapshot.texture);
 
 		// apply operations on the snapshot until you get to the targetOp.
+		console.log(this.currentOp, targetOp)
 		for (let op = targetSnapshot.index + 1; op <= targetOp; op++) {
+			console.log(op)
 			this.artwork.applySavedOperation(this.operationStack[op]);
 		}
 
@@ -152,8 +164,13 @@ class UndoStack {
 		}
 
 		let targetSnapshot = this._getClosestSnapshot(targetOp);
+		
+		// reset artwork buffer to snapshot
+		this.artwork.setToSnapshot(targetSnapshot.texture);
 
+		console.log(this.currentOp, targetOp)
 		for (let op = targetSnapshot.index + 1; op <= targetOp; op ++) {
+			console.log(op)
 			this.artwork.applySavedOperation(this.operationStack[op]);
 		}
 

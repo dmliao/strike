@@ -11,7 +11,7 @@ class Artwork {
 			width: element.offsetWidth,
 			height: element.offsetHeight
 		});
-		// this.app.resizeTo = element;
+		this.app.resizeTo = element;
 
 		// create viewport
 		this.viewport = new Viewport.Viewport({
@@ -32,7 +32,6 @@ class Artwork {
 		this.currentTool = tools.get(store.get('tool'));
 		store.subscribe('tool', (newTool) => {
 			this.currentTool = tools.get(newTool);
-			console.log(this.currentTool)
 			if (newTool === toolId.MOVE) {
 				this.activateMoveViewport();
 			} else {
@@ -68,8 +67,6 @@ class Artwork {
 			palette: texture,
 			swatchSize: 8
 		}
-
-		console.log(uniforms)
 
 		this.shader = new PIXI.Filter('', res.shader.data, uniforms);
 		this.renderTextureSprite.filters = [this.shader]
@@ -145,7 +142,6 @@ class Artwork {
 		}
 		
 		// TODO: apply saved operation per tool.
-		console.log(op.operation);
 		tool.applyOperation(op.operation, this.app.renderer, this.renderTexture);
 	}
 }
