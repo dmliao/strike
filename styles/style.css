@@ -37,16 +37,24 @@ body {
 	background-color: #000;
 	border-bottom: 1px solid #FFF;
 	display: flex;
+	align-items: center;
 }
 
 #sidebar {
 	grid-area: sidebar;
 	background-color: #000;
 	border-right: 1px solid #FFF;
+	display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #main {
 	grid-area: main;
+}
+
+#toolbox {
+	display: flex;
 }
 
 .tool-button {
@@ -96,7 +104,7 @@ input[type="range"].range
 	 width: 120px !important;
 	 height: 24px;
      -webkit-appearance: none;
-     z-index: 200;
+     z-index: 2;
      border: 1px solid #fff;
      background-color: #000;
 }
@@ -128,4 +136,41 @@ label {
 	font-family: sans-serif;
 	color: #FFF;
 	text-align: center;
+}
+
+.dropdown {
+	overflow: visible;
+	z-index: 10;
+	position: relative;
+}
+
+.dropdown-list {
+	position: absolute;
+	z-index: 10;
+	color: #FFF;
+	background-color: #000;
+	border: 1px solid #FFF;
+	min-width: 160px;
+	padding: 10px;
+}
+
+.dropdown-list ul {
+	margin: 0;
+	padding: 0;
+}
+
+.dropdown-item {
+	width: 100%;
+}
+
+.dropdown-item-button {
+	width: 100%;
+	background-color: transparent;
+	color: #FFF;
+	border: none;
+}
+
+.dropdown-item-button:hover {
+	background-color: #FFF;
+	color: #000;
 }

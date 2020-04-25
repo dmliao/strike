@@ -3,7 +3,7 @@ import { toolId } from '../../frame/tools.js';
 import { ToolButton } from '../components/tool_button.js';
 
 const Toolbox = (props) => {
-	return (html`<nav>
+	return (html`<nav id="toolbox">
 		<${ToolButton} tool=${toolId.PAINT} icon="icon-round-brush" />
 		<${ToolButton} tool=${toolId.ERASER} icon="icon-eraser" />
 		<${ToolButton} tool=${toolId.FILL} icon="icon-bucket" />
