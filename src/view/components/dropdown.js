@@ -1,15 +1,27 @@
 import { html, useState, useEffect } from '/node_modules/htm/preact/standalone.mjs';
+import store from '../../foundation/store.js';
 
 export const DropdownItem = (props) => {
-	const noop = () => {}
+	const onclick = () => {
+		if (props.onclick) {
+			props.onclick();
+		}
+
+		store.publish('hide_dropdown')
+	}
 	return (html`<li class="dropdown-item">
-		<button class="dropdown-item-button" onclick=${props.onclick || noop}>
+		<button class="dropdown-item-button" onclick=${onclick}>
 			${props.children}
 		</button>
 	</li>`)
 }
 
 export const DropdownButton = (props) => {
+	useEffect(() => {
+		store.listen('hide_dropdown', () => {
+			setShowDropdown(false)
+		});
+	}, [])
 	const [showDropdown, setShowDropdown] = useState(false);
 	const onMouseEnter = () => {
 		if (!props.showOnHover) {

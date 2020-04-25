@@ -41,6 +41,7 @@ class UndoStack {
 	reset() {
 		this.snapshotStack = [];
 		this.operationStack = [];
+		this.currentOp = -1;
 
 		this._addSnapshot();
 

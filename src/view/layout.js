@@ -1,4 +1,5 @@
 import { html, render, useState } from '/node_modules/htm/preact/standalone.mjs';
+import store from '../foundation/store.js';
 
 import { ToolButton } from './components/tool_button.js'
 import { DropdownButton, DropdownItem } from './components/dropdown.js';
@@ -14,7 +15,7 @@ const Layout = (props) => {
 	<main id="app">
 		<div id="header">
 			<${DropdownButton} label="File" hideOnLeave>
-				<${DropdownItem}>New Canvas<//>
+				<${DropdownItem} onclick=${() => { store.publish('new') }}>New Canvas<//>
 				<${DropdownItem}>Import Canvas<//>
 				<${DropdownItem}>Export Canvas<//>
 			<//>

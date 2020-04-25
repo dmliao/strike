@@ -3,13 +3,16 @@ import tools, { toolId } from './tools.js';
 
 import UndoStack from './undo_stack.js';
 
+let EMPTY_SPRITE = new PIXI.Sprite(PIXI.Texture.EMPTY);
+
 class Artwork {
 
 	constructor(element) {
 		this.undo = new UndoStack(this);
 		this.app = new PIXI.Application({
 			width: element.offsetWidth,
-			height: element.offsetHeight
+			height: element.offsetHeight,
+			backgroundColor: 0x111111
 		});
 		this.app.resizeTo = element;
 
@@ -41,11 +44,24 @@ class Artwork {
 
 		element.appendChild(this.app.view);
 
-		this.createSurface(800, 600)
+		// global actions
+		store.listen('new', (dimensions) => {
+			dimensions = dimensions = {};
+			const { width, height } = dimensions;
+			this.new(width || 800, height || 600);
+		})
+		
+		this.new(800, 600)
+
 	}
 
 	getViewport() {
 		return this.viewport;
+	}
+
+	resetViewport() {
+		this.viewport.scaled = 1;
+		this.viewport.center = new PIXI.Point(this.renderTextureSprite.width / 2, this.renderTextureSprite.height / 2)
 	}
 
 	activateMoveViewport() {	
@@ -72,24 +88,37 @@ class Artwork {
 		this.renderTextureSprite.filters = [this.shader]
 	}
 
-	createSurface(width, height) {
+	_createSurface(width, height) {
 		this.renderTexture = PIXI.RenderTexture.create(width || this.app.screen.width, height || this.app.screen.height);
 		this.renderTextureSprite = new PIXI.Sprite(this.renderTexture);
 
 		this.viewport.addChild(this.renderTextureSprite);
-		// this.app.stage.addChild(this.renderTextureSprite);
 
 		this.renderTextureSprite.interactive = true;
 		this.renderTextureSprite.on('pointerdown', this.pointerDown.bind(this));
 		this.renderTextureSprite.on('pointerup', this.pointerUp.bind(this));
 		this.renderTextureSprite.on('pointermove', this.pointerMove.bind(this));
 
-		this.undo.reset();
-
 		if (this.shader) {
 			this.renderTextureSprite.filters = [this.shader]
 		}
 
+	}
+
+	new(width, height) {
+		if (!this.renderTexture) {
+			this._createSurface(width, height);
+		} else {
+			this.resize(width, height);
+			this.app.renderer.render(EMPTY_SPRITE, this.renderTexture, true, null, false);
+		}
+
+		this.undo.reset();
+		this.resetViewport();
+	}
+
+	resize(width, height) {
+		this.renderTexture.resize(width, height, true);
 	}
 
 	pointerMove (event) {
