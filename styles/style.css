@@ -55,13 +55,20 @@ body {
 	align-items: center;
 }
 
+.header-right {
+	display: flex;
+	align-items: center;
+	margin-left: auto;
+}
+
 #sidebar {
 	grid-area: sidebar;
 	background-color: #000;
 	border-right: 1px solid #FFF;
 	display: flex;
     flex-direction: column;
-    align-items: center;
+	align-items: center;
+	justify-content: center;
 }
 
 #main {

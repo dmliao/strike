@@ -25,8 +25,11 @@ const Layout = (props) => {
 				<${DropdownItem} onclick=${() => { store.publish('mirror') }}>Mirror Horizontal<//>
 				<${DropdownItem} onclick=${() => { store.publish('flip') }}>Flip Vertical<//>
 			<//>
-			<${Toolbox} />
-			<${Palette} />
+			<div class="header-right">
+				<${Toolbox} />
+				<${Palette} />
+			</div>
+			
 		</div>
 		<div id="sidebar">
 			<${BrushOptions} />

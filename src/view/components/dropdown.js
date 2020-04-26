@@ -27,6 +27,7 @@ export const DropdownButton = (props) => {
 		if (!props.showOnHover) {
 			return;
 		}
+		store.publish('hide_dropdown')
 		setShowDropdown(true);
 	}
 	const onMouseLeave = () => {
@@ -37,6 +38,9 @@ export const DropdownButton = (props) => {
 	}
 
 	const onButtonClick = () => {
+		if (!showDropdown) {
+			store.publish('hide_dropdown');
+		}
 		setShowDropdown(!showDropdown);
 	}
 
