@@ -64,6 +64,10 @@ class Artwork {
 		store.listen('flip', () => {
 			this.flipVertical();
 		})
+
+		store.listen('export', () => {
+			this.exportImage();
+		})
 	}
 
 	getViewport() {
@@ -126,6 +130,23 @@ class Artwork {
 
 		this.undo.reset();
 		this.resetViewport();
+	}
+
+	importImage() {
+		// TODO: implement this.
+	}
+
+	exportImage() {
+		const snapshot = new PIXI.Sprite(this.renderTexture);
+		snapshot.filters = [this.shader];
+		this.app.renderer.extract.canvas(snapshot).toBlob(function(b){
+			var a = document.createElement('a');
+			document.body.append(a);
+			a.download = 'strike-export.png';
+			a.href = URL.createObjectURL(b);
+			a.click();
+			a.remove();
+		}, 'image/png');
 	}
 
 	resize(width, height) {

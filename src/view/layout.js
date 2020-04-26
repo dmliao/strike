@@ -17,11 +17,11 @@ const Layout = (props) => {
 			<${DropdownButton} label="File" hideOnLeave>
 				<${DropdownItem} onclick=${() => { store.publish('new') }}>New Canvas<//>
 				<${DropdownItem}>Import Canvas<//>
-				<${DropdownItem}>Export Canvas<//>
+				<${DropdownItem} onclick=${() => { store.publish('export') }}>Export Canvas<//>
 			<//>
 			<${DropdownButton} label="Image" hideOnLeave>
 				<${DropdownItem}>Resize Canvas<//>
-				<${DropdownItem} onclick=${() => { console.log('mirror'); store.publish('mirror') }}>Mirror Horizontal<//>
+				<${DropdownItem} onclick=${() => { store.publish('mirror') }}>Mirror Horizontal<//>
 				<${DropdownItem} onclick=${() => { store.publish('flip') }}>Flip Vertical<//>
 			<//>
 			<${Toolbox} />
