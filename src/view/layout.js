@@ -21,8 +21,8 @@ const Layout = (props) => {
 			<//>
 			<${DropdownButton} label="Image" hideOnLeave>
 				<${DropdownItem}>Resize Canvas<//>
-				<${DropdownItem}>Mirror Horizontal<//>
-				<${DropdownItem}>Flip Vertical<//>
+				<${DropdownItem} onclick=${() => { console.log('mirror'); store.publish('mirror') }}>Mirror Horizontal<//>
+				<${DropdownItem} onclick=${() => { store.publish('flip') }}>Flip Vertical<//>
 			<//>
 			<${Toolbox} />
 			<${Palette} />

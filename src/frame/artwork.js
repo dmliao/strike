@@ -44,15 +44,26 @@ class Artwork {
 
 		element.appendChild(this.app.view);
 
+		this.new(800, 600)
+		this._bindListeners();
+
+	}
+
+	_bindListeners() {
 		// global actions
 		store.listen('new', (dimensions) => {
 			dimensions = dimensions = {};
 			const { width, height } = dimensions;
 			this.new(width || 800, height || 600);
 		})
-		
-		this.new(800, 600)
 
+		store.listen('mirror', () => {
+			this.mirrorHorizontal();
+		})
+
+		store.listen('flip', () => {
+			this.flipVertical();
+		})
 	}
 
 	getViewport() {
@@ -119,6 +130,30 @@ class Artwork {
 
 	resize(width, height) {
 		this.renderTexture.resize(width, height, true);
+	}
+
+	mirrorHorizontal() {
+		const snapshotTexture = this._copyRenderTexture();
+		const mirrored = new PIXI.Sprite(snapshotTexture);
+		mirrored.scale.x = -1
+		mirrored.position.x = this.renderTexture.width;
+		this.app.renderer.render(mirrored, this.renderTexture, true, null, false)
+		this.addUndoable('MIRROR', undefined, false);
+	}
+
+	flipVertical() {
+		const snapshotTexture = this._copyRenderTexture();
+		const mirrored = new PIXI.Sprite(snapshotTexture);
+		mirrored.scale.y = -1
+		mirrored.position.y = this.renderTexture.height;
+		this.app.renderer.render(mirrored, this.renderTexture, true, null, false)
+		this.addUndoable('FLIP', undefined, false);
+	}
+
+	_copyRenderTexture() {
+		const snapshotTexture = PIXI.RenderTexture.create(this.renderTexture.width, this.renderTexture.height);
+		this.app.renderer.render(this.renderTextureSprite, snapshotTexture, true, null, false);
+		return snapshotTexture;
 	}
 
 	pointerMove (event) {

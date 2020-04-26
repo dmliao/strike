@@ -2,6 +2,8 @@
 import Paint from '../tools/paint.js';
 import Eraser from '../tools/eraser.js';
 import Fill from '../tools/fill.js';
+import Mirror from '../tools/mirror.js';
+import Flip from '../tools/flip.js';
 
 class Tools {
 	constructor() {
@@ -9,6 +11,8 @@ class Tools {
 			PAINT: new Paint(),
 			ERASER: new Eraser(),
 			FILL: new Fill(),
+			MIRROR: new Mirror(),
+			FLIP: new Flip(),
 		}
 	}
 	get(toolName) {
