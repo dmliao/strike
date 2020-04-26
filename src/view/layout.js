@@ -34,6 +34,7 @@ const Layout = (props) => {
 			
 		</div>
 		<div id="sidebar">
+			<${ToolButton} icon="icon-palette" tool=${toolId.EYEDROPPER} />
 			<${BrushOptions} />
 			<${UndoRedo} />
 			<${ToolButton} icon="icon-move" tool=${toolId.MOVE} />

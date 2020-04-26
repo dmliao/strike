@@ -6,6 +6,7 @@ import Mirror from '../tools/mirror.js';
 import Flip from '../tools/flip.js';
 import Stretch from '../tools/stretch.js';
 import Resize from '../tools/resize.js';
+import Eyedropper from '../tools/eyedropper.js';
 
 class Tools {
 	constructor() {
@@ -13,6 +14,7 @@ class Tools {
 			PAINT: new Paint(),
 			ERASER: new Eraser(),
 			FILL: new Fill(),
+			EYEDROPPER: new Eyedropper(),
 			MIRROR: new Mirror(),
 			FLIP: new Flip(),
 			STRETCH: new Stretch(),
@@ -28,7 +30,8 @@ export const toolId = {
 	PAINT: 'PAINT',
 	ERASER: 'ERASER',
 	FILL: 'FILL',
-	MOVE: 'MOVE'
+	MOVE: 'MOVE',
+	EYEDROPPER: 'EYEDROPPER',
 }
 
 // singleton
