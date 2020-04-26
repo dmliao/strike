@@ -5,7 +5,7 @@ import store from '../foundation/store.js';
 class UndoStack {
 	constructor(artwork) {
 		this.operationsPerSnapshot = 2;
-		this.maxSnapshots = 5;
+		this.maxSnapshots = 2;
 
 		/*
 			each item in the snapshotStack is an obj of the form
@@ -71,6 +71,31 @@ class UndoStack {
 		}
 	}
 
+	_freeOldUndos() {
+		// gets rid of really old snapshots. 
+		if (this.snapshotStack.length <= this.maxSnapshots) {
+			return; // don't do anything
+		}
+
+		// start pruning old snapshots
+		const sliceStart = this.snapshotStack.length - this.maxSnapshots;
+		const slicedSnapshots = this.snapshotStack.slice(sliceStart);
+
+		const operationSliceStart = slicedSnapshots[0].index + 1; // min 0
+		const slicedOperations = this.operationStack.slice(operationSliceStart);
+
+		for (let snapshot of slicedSnapshots) {
+			snapshot.index -= operationSliceStart;
+		}
+
+		console.log(slicedSnapshots)
+		console.log(slicedOperations)
+
+		this.snapshotStack = slicedSnapshots;
+		this.operationStack = slicedOperations;
+		this.currentOp -= operationSliceStart;
+	}
+
 	_addSnapshot() {
 		if (!this.artwork.renderTexture) {
 			return;
@@ -109,6 +134,8 @@ class UndoStack {
 		if (createSnapshot) {
 			this._addSnapshot();
 		}
+
+		this._freeOldUndos();
 
 		store.update('can_undo', this.canUndo());
 		store.update('can_redo', this.canRedo());
