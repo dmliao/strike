@@ -238,6 +238,10 @@ class Artwork {
 		const snapshotTexture = this._copyRenderTexture();
 		this.renderTexture.resize(width, height, true);
 		this.app.renderer.render(new PIXI.Sprite(snapshotTexture), this.renderTexture, true, null, false)
+		this.addUndoable('RESIZE', {
+			width,
+			height
+		})
 	}
 
 	stretch(width, height) {
@@ -258,6 +262,10 @@ class Artwork {
 		stretchedSnapshot.scale.y = height / this.renderTexture.height;
 		this.renderTexture.resize(width, height, true);
 		this.app.renderer.render(stretchedSnapshot, this.renderTexture, true, null, false)
+		this.addUndoable('STRETCH', {
+			width,
+			height
+		});
 	}
 
 	mirrorHorizontal() {
@@ -319,6 +327,9 @@ class Artwork {
 
 	setToSnapshot(texture) {
 		const newTextureSprite = new PIXI.Sprite(texture);
+		if (this.renderTexture.width !== texture.width || this.renderTexture.height !== texture.height) {
+			this.renderTexture.resize(texture.width, texture.height, true);
+		}
 		this.app.renderer.render(newTextureSprite, this.renderTexture, true, null, false);
 	}
 

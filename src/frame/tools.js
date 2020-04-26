@@ -4,6 +4,8 @@ import Eraser from '../tools/eraser.js';
 import Fill from '../tools/fill.js';
 import Mirror from '../tools/mirror.js';
 import Flip from '../tools/flip.js';
+import Stretch from '../tools/stretch.js';
+import Resize from '../tools/resize.js';
 
 class Tools {
 	constructor() {
@@ -13,6 +15,8 @@ class Tools {
 			FILL: new Fill(),
 			MIRROR: new Mirror(),
 			FLIP: new Flip(),
+			STRETCH: new Stretch(),
+			RESIZE: new Resize(),
 		}
 	}
 	get(toolName) {
