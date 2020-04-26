@@ -1,5 +1,6 @@
 import store from '../foundation/store.js';
 import tools, { toolId } from './tools.js';
+import { rgbQuantColors } from '../palette/raw_colors.js';
 
 import UndoStack from './undo_stack.js';
 
@@ -65,6 +66,14 @@ class Artwork {
 			this.flipVertical();
 		})
 
+		store.listen('save', () => {
+			this.saveImage();
+		})
+
+		store.listen('import', () => {
+			this.importImage();
+		})
+
 		store.listen('export', () => {
 			this.exportImage();
 		})
@@ -79,7 +88,7 @@ class Artwork {
 		this.viewport.center = new PIXI.Point(this.renderTextureSprite.width / 2, this.renderTextureSprite.height / 2)
 	}
 
-	activateMoveViewport() {	
+	activateMoveViewport() {
 		// activate plugins
 		this.viewport
 			.drag()
@@ -133,13 +142,62 @@ class Artwork {
 	}
 
 	importImage() {
-		// TODO: implement this.
+		const self = this; // hooray for waterfall chaining.
+
+		const ext = 'png'
+		const input = document.createElement('input')
+		input.type = 'file'
+		input.accept = '.png, .PNG'
+		input.setAttribute('multiple', 'multiple')
+		input.onchange = (e) => {
+			for (const file of e.target.files) {
+				if (file.name.toLowerCase().indexOf('.' + ext) < 0) { continue }
+
+				// do something with the file.
+				const reader = new FileReader()
+				reader.addEventListener("load", function () {
+					// convert image file to base64 string
+					const img = document.createElement('img');
+					img.src = reader.result;
+					img.onload = () => {
+							
+						const q = new RgbQuant({
+							palette: rgbQuantColors(),
+						})
+
+						const pixelArray = q.reduce(img);
+						const newTexture = PIXI.Texture.fromBuffer(pixelArray, img.width, img.height);
+						const newTextureSprite = new PIXI.Sprite(newTexture);
+						self.resize(img.width, img.height);
+						self.app.renderer.render(newTextureSprite, self.renderTexture, true, null, false);
+
+						console.log('loaded image')
+						self.undo.reset();
+						self.resetViewport();
+					} 
+
+				}, false);
+				reader.readAsDataURL(file)
+			}
+		}
+		input.click()
+	}
+
+	saveImage() {
+		this.app.renderer.extract.canvas(this.renderTexture).toBlob(function (b) {
+			var a = document.createElement('a');
+			document.body.append(a);
+			a.download = 'strike-raw.png';
+			a.href = URL.createObjectURL(b);
+			a.click();
+			a.remove();
+		}, 'image/png');
 	}
 
 	exportImage() {
 		const snapshot = new PIXI.Sprite(this.renderTexture);
 		snapshot.filters = [this.shader];
-		this.app.renderer.extract.canvas(snapshot).toBlob(function(b){
+		this.app.renderer.extract.canvas(snapshot).toBlob(function (b) {
 			var a = document.createElement('a');
 			document.body.append(a);
 			a.download = 'strike-export.png';
@@ -177,7 +235,7 @@ class Artwork {
 		return snapshotTexture;
 	}
 
-	pointerMove (event) {
+	pointerMove(event) {
 		if (!this.currentTool) {
 			return;
 		}
@@ -186,7 +244,7 @@ class Artwork {
 		}
 	}
 
-	pointerDown (event) {
+	pointerDown(event) {
 		if (!this.currentTool) {
 			return;
 		}
@@ -194,7 +252,7 @@ class Artwork {
 		this.currentTool.begin(this.app.renderer, this.renderTexture, event, this);
 	}
 
-	pointerUp (event) {
+	pointerUp(event) {
 		if (!this.currentTool) {
 			return;
 		}
@@ -202,7 +260,7 @@ class Artwork {
 			return;
 		}
 		this.dragging = false;
-		
+
 		if (!this.renderTextureSprite) {
 			return;
 		}
@@ -214,7 +272,7 @@ class Artwork {
 		const newTextureSprite = new PIXI.Sprite(texture);
 		this.app.renderer.render(newTextureSprite, this.renderTexture, true, null, false);
 	}
-	
+
 	addUndoable(toolName, op, createSnapshot) {
 		this.undo.addUndoable(toolName, op, createSnapshot);
 	}
@@ -225,7 +283,7 @@ class Artwork {
 			console.log('Operation had invalid tool: ', op);
 			return;
 		}
-		
+
 		// TODO: apply saved operation per tool.
 		tool.applyOperation(op.operation, this.app.renderer, this.renderTexture);
 	}

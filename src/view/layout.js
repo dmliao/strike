@@ -16,8 +16,9 @@ const Layout = (props) => {
 		<div id="header">
 			<${DropdownButton} label="File" hideOnLeave>
 				<${DropdownItem} onclick=${() => { store.publish('new') }}>New Canvas<//>
-				<${DropdownItem}>Import Canvas<//>
-				<${DropdownItem} onclick=${() => { store.publish('export') }}>Export Canvas<//>
+				<${DropdownItem} onclick=${() => { store.publish('import') }}>Import Image<//>
+				<${DropdownItem} onclick=${() => { store.publish('save') }}>Save Raw Image<//>
+				<${DropdownItem} onclick=${() => { store.publish('export') }}>Export 1-bit Image<//>
 			<//>
 			<${DropdownButton} label="Image" hideOnLeave>
 				<${DropdownItem}>Resize Canvas<//>

@@ -17,3 +17,20 @@ export const colors = [
 	0xEEEEEE,
 	0xFFFFFF
 ];
+
+export const rgbQuantColors = () => {
+	const _toColor = (num) => {
+		num >>>= 0;
+			var b = num & 0xFF,
+				g = (num & 0xFF00) >>> 8,
+				r = (num & 0xFF0000) >>> 16;
+			return [r, g, b];
+	}
+
+	const q = [];
+	for (let color of colors) {
+		q.push(_toColor(color));
+	}
+
+	return q;
+}
