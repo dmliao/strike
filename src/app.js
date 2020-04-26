@@ -16,20 +16,6 @@ store.update('eraser.size', 8);
 store.update('tool', 'PAINT');
 store.update('color', 0xffffff);
 
-// temporary tool switching
-document.addEventListener('keypress', (ev) => {
-	if (store.get('tool') === 'PAINT') {
-		store.update('tool', 'ERASER')
-	} else if (store.get('tool') === 'ERASER') {
-		store.update('tool', 'FILL')
-	} else if (store.get('tool') == 'FILL') {
-		store.update('tool', 'MOVE')
-	} else {
-		store.update('tool', 'PAINT')
-	}
-})
-
-
 const App = (props) => {
 	useEffect(() => {
 		const artwork = new Artwork(document.getElementById("main"));

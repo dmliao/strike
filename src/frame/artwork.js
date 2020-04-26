@@ -53,9 +53,21 @@ class Artwork {
 	_bindListeners() {
 		// global actions
 		store.listen('new', (dimensions) => {
-			dimensions = dimensions = {};
+			dimensions = dimensions || store.get('dimensions') || {};
 			const { width, height } = dimensions;
 			this.new(width || 800, height || 600);
+		})
+
+		store.listen('resize', (dim) => {
+			this.resize(dim.width, dim.height);
+		})
+
+		store.listen('stretch', (dim) => {
+			this.stretch(dim.width, dim.height);
+		})
+
+		store.listen('center', () => {
+			this.resetViewport();
 		})
 
 		store.listen('mirror', () => {
@@ -132,6 +144,10 @@ class Artwork {
 	new(width, height) {
 		if (!this.renderTexture) {
 			this._createSurface(width, height);
+			store.update('dimensions', {
+				width,
+				height
+			})
 		} else {
 			this.resize(width, height);
 			this.app.renderer.render(EMPTY_SPRITE, this.renderTexture, true, null, false);
@@ -208,7 +224,40 @@ class Artwork {
 	}
 
 	resize(width, height) {
+		if (!this.renderTexture) {
+			return;
+		}
+		if (width === this.renderTexture.width && height === this.renderTexture.height) {
+			return; // do nothing
+		}
+		store.update('dimensions', {
+			width,
+			height
+		})
+
+		const snapshotTexture = this._copyRenderTexture();
 		this.renderTexture.resize(width, height, true);
+		this.app.renderer.render(new PIXI.Sprite(snapshotTexture), this.renderTexture, true, null, false)
+	}
+
+	stretch(width, height) {
+		if (!this.renderTexture) {
+			return;
+		}
+		if (width === this.renderTexture.width && height === this.renderTexture.height) {
+			return; // do nothing
+		}
+		store.update('dimensions', {
+			width,
+			height
+		})
+
+		const snapshotTexture = this._copyRenderTexture();
+		const stretchedSnapshot = new PIXI.Sprite(snapshotTexture)
+		stretchedSnapshot.scale.x = width / this.renderTexture.width;
+		stretchedSnapshot.scale.y = height / this.renderTexture.height;
+		this.renderTexture.resize(width, height, true);
+		this.app.renderer.render(stretchedSnapshot, this.renderTexture, true, null, false)
 	}
 
 	mirrorHorizontal() {

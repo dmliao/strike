@@ -1,4 +1,4 @@
-import { html, render, useState } from '/node_modules/htm/preact/standalone.mjs';
+import { html } from '/node_modules/htm/preact/standalone.mjs';
 import store from '../foundation/store.js';
 
 import { ToolButton } from './components/tool_button.js'
@@ -7,6 +7,7 @@ import { toolId } from '../frame/tools.js'
 import { Palette } from './palette.js'
 
 import Toolbox from './header/toolbox.js'
+import { ResizeModal, StretchModal } from './header/resize_modal.js'
 import UndoRedo from './sidebar/undo_redo.js'
 import BrushOptions from './sidebar/brush_options.js'
 
@@ -21,7 +22,8 @@ const Layout = (props) => {
 				<${DropdownItem} onclick=${() => { store.publish('export') }}>Export 1-bit Image<//>
 			<//>
 			<${DropdownButton} label="Image" hideOnLeave>
-				<${DropdownItem}>Resize Canvas<//>
+				<${DropdownItem} onclick=${() => { store.publish('modal_show', 'resize')}}>Resize Canvas<//>
+				<${DropdownItem} onclick=${() => { store.publish('modal_show', 'stretch')}}>Stretch Image<//>
 				<${DropdownItem} onclick=${() => { store.publish('mirror') }}>Mirror Horizontal<//>
 				<${DropdownItem} onclick=${() => { store.publish('flip') }}>Flip Vertical<//>
 			<//>
@@ -39,6 +41,8 @@ const Layout = (props) => {
 		<div id="main">
 			${props.children}
 		</div>
+		<${ResizeModal} />
+		<${StretchModal} />
 	</main>
 	`);
 }
