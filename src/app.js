@@ -12,8 +12,9 @@ PIXI.settings.PRECISION_FRAGMENT = PIXI.PRECISION.HIGH;
 PIXI.settings.MIPMAP_TEXTURES = PIXI.MIPMAP_MODES.OFF;
 
 // setup brush tool
-
+store.update('eraser.size', 8);
 store.update('tool', 'PAINT');
+store.update('color', 0xffffff);
 
 // temporary tool switching
 document.addEventListener('keypress', (ev) => {
