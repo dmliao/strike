@@ -54,7 +54,10 @@ class Paint extends Tool {
 	updateBrush({size, shape, color} = {}) {
 		this.brushSize = size || this.brushSize;
 		this.brushShape = shape || this.brushShape;
-		this.color = color || this.color;
+		if (color !== undefined && color !== null) {
+			this.color = color;
+		}
+		
 		this.brush.angle = 0;
 
 		this._updateBrushTemporary(this.brushSize, this.brushShape, this.color);
