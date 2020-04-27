@@ -79,6 +79,10 @@ body {
 	display: flex;
 }
 
+#shapes {
+	display: flex;
+}
+
 .tool-button {
 	padding: 10px;
 	border: 1px solid rgba(0,0,0,0);
@@ -241,4 +245,8 @@ input[type=number] {
 	border: 1px solid #FFF;
 	box-shadow: none;
 	font-family: monospace;
+}
+
+.h-gap {
+	width: 20px;
 }

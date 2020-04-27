@@ -19,6 +19,15 @@ class Eraser extends Paint {
 				size: newSize
 			});
 		})
+
+		this.brushShape = storeSingleton.get('eraser.shape') || 'flat';
+		storeSingleton.subscribe('eraser.shape', (newShape) => {
+			this.updateBrush({
+				shape: newShape
+			});
+		})
+
+		storeSingleton.update('eraser.shape', this.brushShape);
 	}
 
 	updateBrush({size, shape, color} = {}) {

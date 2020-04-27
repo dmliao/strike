@@ -31,15 +31,24 @@ class Paint extends Tool {
 
 	subscribe() {
 		this.brushSize = storeSingleton.get('paint.size') || 1;
+		this.brushShape = storeSingleton.get('paint.shape') || 'flat';
 		storeSingleton.subscribe('paint.size', (newSize) => {
 			this.updateBrush({
 				size: newSize
 			});
 		})
 
+		storeSingleton.subscribe('paint.shape', (newShape) => {
+			this.updateBrush({
+				shape: newShape
+			});
+		})
+
 		storeSingleton.subscribe('color', (color) => {
 			this.updateBrush({ color });
 		})
+
+		storeSingleton.update('paint.shape', this.brushShape);
 	}
 
 	updateBrush({size, shape, color} = {}) {
@@ -58,10 +67,13 @@ class Paint extends Tool {
 			this.brush.drawRect(0, 0, 1, 1);
 		} else if (size > 1 && shape === "round") {
 			this.brush.drawCircle(0, 0, size / 2);
+			this.shouldRotateBrush = false;
 		} else if (size > 1 && shape === "flat") {
 			this.brush.drawRect(-Math.ceil(size/4), -Math.ceil(size/2), size/2, size);
+			this.shouldRotateBrush = true;
 		} else {
 			this.brush.drawRect(-Math.ceil(size/2), -Math.ceil(size/2), size, size);
+			this.shouldRotateBrush = false;
 		}
 		this.brush.endFill();
 	}

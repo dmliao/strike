@@ -12,7 +12,7 @@ export const IconButton = (props) => {
 		buttonClass += ' disabled';
 	}
 
-	return (html`<div><button title=${props.title} disabled=${props.disabled} class=${buttonClass} onclick=${props.onclick}><i class=${props.icon} /></button></div>`)
+	return (html`<div><button style=${props.style} title=${props.title} disabled=${props.disabled} class=${buttonClass} onclick=${props.onclick}><i class=${props.icon} /></button></div>`)
 }
 
 export const ToolButton = (props) => {

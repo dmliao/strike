@@ -6,6 +6,7 @@ import { DropdownButton, DropdownItem } from './components/dropdown.js';
 import { toolId } from '../frame/tools.js'
 import { Palette } from './palette.js'
 
+import BrushShapes from './header/brush_shapes.js'
 import Toolbox from './header/toolbox.js'
 import { ResizeModal, StretchModal } from './header/resize_modal.js'
 import UndoRedo from './sidebar/undo_redo.js'
@@ -28,6 +29,8 @@ const Layout = (props) => {
 				<${DropdownItem} onclick=${() => { store.publish('flip') }}>Flip Vertical<//>
 			<//>
 			<div class="header-right">
+				<${BrushShapes} />
+				<div class="h-gap" />
 				<${Toolbox} />
 				<${Palette} />
 			</div>
@@ -35,6 +38,7 @@ const Layout = (props) => {
 		</div>
 		<div id="sidebar">
 			<${ToolButton} title="Sample color" icon="icon-palette" tool=${toolId.EYEDROPPER} />
+			
 			<${BrushOptions} />
 			<${UndoRedo} />
 			<${ToolButton} title="Move view" icon="icon-move" tool=${toolId.MOVE} />
