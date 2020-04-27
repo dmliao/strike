@@ -4,9 +4,9 @@ import { ToolButton } from '../components/tool_button.js';
 
 const Toolbox = (props) => {
 	return (html`<nav id="toolbox">
-		<${ToolButton} tool=${toolId.PAINT} icon="icon-round-brush" />
-		<${ToolButton} tool=${toolId.ERASER} icon="icon-eraser" />
-		<${ToolButton} tool=${toolId.FILL} icon="icon-bucket" />
+		<${ToolButton} title="Brush tool" tool=${toolId.PAINT} icon="icon-round-brush" />
+		<${ToolButton} title="Eraser tool" tool=${toolId.ERASER} icon="icon-eraser" />
+		<${ToolButton} title="Fill tool" tool=${toolId.FILL} icon="icon-bucket" />
 	</nav>`)
 }
 

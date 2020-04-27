@@ -12,7 +12,7 @@ export const IconButton = (props) => {
 		buttonClass += ' disabled';
 	}
 
-	return (html`<div><button disabled=${props.disabled} class=${buttonClass} onclick=${props.onclick}><i class=${props.icon} /></button></div>`)
+	return (html`<div><button title=${props.title} disabled=${props.disabled} class=${buttonClass} onclick=${props.onclick}><i class=${props.icon} /></button></div>`)
 }
 
 export const ToolButton = (props) => {
@@ -27,7 +27,7 @@ export const ToolButton = (props) => {
 		});
 	}, [])
 
-	return (html`<${IconButton} active=${active} icon=${icon} onclick=${() => {
+	return (html`<${IconButton} title=${props.title} active=${active} icon=${icon} onclick=${() => {
 		store.update('tool', tool);
 	}}/>`)
 }

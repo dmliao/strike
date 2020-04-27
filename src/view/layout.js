@@ -1,7 +1,7 @@
 import { html } from '/node_modules/htm/preact/standalone.mjs';
 import store from '../foundation/store.js';
 
-import { ToolButton } from './components/tool_button.js'
+import { ToolButton, IconButton } from './components/tool_button.js'
 import { DropdownButton, DropdownItem } from './components/dropdown.js';
 import { toolId } from '../frame/tools.js'
 import { Palette } from './palette.js'
@@ -34,10 +34,13 @@ const Layout = (props) => {
 			
 		</div>
 		<div id="sidebar">
-			<${ToolButton} icon="icon-palette" tool=${toolId.EYEDROPPER} />
+			<${ToolButton} title="Sample color" icon="icon-palette" tool=${toolId.EYEDROPPER} />
 			<${BrushOptions} />
 			<${UndoRedo} />
-			<${ToolButton} icon="icon-move" tool=${toolId.MOVE} />
+			<${ToolButton} title="Move view" icon="icon-move" tool=${toolId.MOVE} />
+			<${IconButton} title="Recenter view" icon="icon-hair-cross" onclick=${() => {
+				store.publish('center')
+			}} />
 		</div>
 		<div id="main">
 			${props.children}

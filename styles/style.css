@@ -113,7 +113,7 @@ body {
 }
 
 .vertical-slider {
-    height: 140px;
+    height: 180px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -123,7 +123,7 @@ body {
 input[type="range"].range
 {
      cursor: pointer;
-	 width: 120px !important;
+	 width: 160px !important;
 	 height: 24px;
      -webkit-appearance: none;
      z-index: 2;
@@ -223,4 +223,22 @@ label {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+}
+
+.modal div {
+	margin-bottom: 12px;
+}
+
+.modal button {
+	padding: 8px;
+}
+
+input[type=number] {
+	background-color: #000;
+	padding: 4px;
+	font-size: 18px;
+	color: #FFF;
+	border: 1px solid #FFF;
+	box-shadow: none;
+	font-family: monospace;
 }

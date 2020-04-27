@@ -18,7 +18,7 @@ const BrushSizeSlider = () => {
 	}, [])
 	
 	return(html`<div id="brush-options"><div class="vertical-slider">
-			<input type="range" min="1" max="10" value=${size} class="range vertical" id="brush-size-slider" oninput=${(event) => {
+			<input type="range" title="Brush size" min="1" max="20" value=${size} class="range vertical" id="brush-size-slider" oninput=${(event) => {
 				const newSize = document.getElementById("brush-size-slider").value
 				if (tool === toolId.PAINT) {
 					store.update('paint.size', newSize)
