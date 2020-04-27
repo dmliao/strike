@@ -11,6 +11,7 @@ import Toolbox from './header/toolbox.js'
 import { ResizeModal, StretchModal } from './header/resize_modal.js'
 import UndoRedo from './sidebar/undo_redo.js'
 import BrushOptions from './sidebar/brush_options.js'
+import AboutModal from './about_modal.js';
 
 const Layout = (props) => {
 	return (html`
@@ -38,6 +39,8 @@ const Layout = (props) => {
 			
 		</div>
 		<div id="sidebar">
+			<div class="sidebar-top" />
+			<div class="sidebar-middle">
 			<${ToolButton} title="Sample color" icon="icon-palette" tool=${toolId.EYEDROPPER} />
 			
 			<${BrushOptions} />
@@ -46,12 +49,17 @@ const Layout = (props) => {
 			<${IconButton} title="Recenter view" icon="icon-hair-cross" onclick=${() => {
 				store.publish('center')
 			}} />
+			</div>
+			<div class="sidebar-bottom">
+			<${IconButton} icon="icon-help" onclick=${() => { store.publish('modal_show', 'about')}} />
+			</div>
 		</div>
 		<div id="main">
 			${props.children}
 		</div>
 		<${ResizeModal} />
 		<${StretchModal} />
+		<${AboutModal} />
 	</main>
 	`);
 }
