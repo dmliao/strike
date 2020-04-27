@@ -4,6 +4,7 @@ import store from './foundation/store.js';
 
 import Layout from './view/layout.js';
 import Artwork from './frame/artwork.js';
+import Palette from './view/palette-pixi.js';
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.RENDER_OPTIONS.antialias = false;
@@ -19,6 +20,7 @@ store.update('color', 0xffffff);
 const App = (props) => {
 	useEffect(() => {
 		const artwork = new Artwork(document.getElementById("main"));
+		const palette = new Palette(document.getElementById("palette"))
 	}, [])
 	return (html`<${Layout}>
 	<//>`);

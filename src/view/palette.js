@@ -3,7 +3,8 @@ import { html, render, useState } from '/node_modules/htm/preact/standalone.mjs'
 import store from '../foundation/store.js';
 import { colors } from '../palette/raw_colors.js';
 
-// TODO: switch over swatch and palette to be a pixi app, where
+// NOTE: this is unused. We switched over to palette-pixi. 
+// switch over swatch and palette to be a pixi app, where
 // the swatches are https://pixijs.download/dev/docs/PIXI.TilingSprite.html instances and 
 // the textures are cut from the palette via http://pixijs.download/dev/docs/PIXI.Texture.html's frame
 // we can make it interactive via https://pixijs.io/examples/#/interaction/click.js
@@ -24,7 +25,7 @@ const Swatch = (props) => {
 	if (isActive) {
 		return (html`
 		<span onclick=${clickHandler} 
-			style="border: 1px solid #000; width: 16px; height: 16px; display: inline-block; background-color: ${cssColor};" />
+			style="border: 1px solid #000; width: 16px; height: 24px; display: inline-block; background-color: ${cssColor};" />
 	`);
 	}
 	return (html`

@@ -10,7 +10,7 @@ class Store {
 		let pointer = this.data;
 		for (let i = 0; i < splitPath.length; i++) {
 			const nextValue = splitPath[i];
-			if (!pointer[nextValue]) {
+			if (pointer[nextValue] === undefined || pointer[nextValue] === null) {
 				return undefined;
 			}
 			pointer = pointer[nextValue];

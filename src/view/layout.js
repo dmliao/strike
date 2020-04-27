@@ -32,7 +32,8 @@ const Layout = (props) => {
 				<${BrushShapes} />
 				<div class="h-gap" />
 				<${Toolbox} />
-				<${Palette} />
+				<div id="palette" />
+				<!--${Palette} /-->
 			</div>
 			
 		</div>
