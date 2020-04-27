@@ -36,6 +36,7 @@ export const ResizeModal = (props) => {
 		<label>Height</label>
 		<input id="resize_h" type="number" min="1" value=${h} /> 
 	</div>
+	<p>All resizes assume that the origin / scale point is at the top left corner of the image. Sorry, there's no way to change that right now.</p>
 	<hr />
 	<div>
 		<button onclick=${onclick}>Confirm</button>

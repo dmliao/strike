@@ -19,8 +19,8 @@ const Layout = (props) => {
 			<${DropdownButton} label="File" hideOnLeave>
 				<${DropdownItem} onclick=${() => { store.publish('new') }}>New Canvas<//>
 				<${DropdownItem} onclick=${() => { store.publish('import') }}>Import Image<//>
-				<${DropdownItem} onclick=${() => { store.publish('save') }}>Save Raw Image<//>
-				<${DropdownItem} onclick=${() => { store.publish('export') }}>Export 1-bit Image<//>
+				<${DropdownItem} title="Saves canvas as a 16-color greyscale image, such that when the image is imported back into this tool, the dithers will render as you created them." onclick=${() => { store.publish('save') }}>Save Raw Image<//>
+				<${DropdownItem} title="Saves canvas as a 1-bit black and white image for exporting." onclick=${() => { store.publish('export') }}>Export 1-bit Image<//>
 			<//>
 			<${DropdownButton} label="Image" hideOnLeave>
 				<${DropdownItem} onclick=${() => { store.publish('modal_show', 'resize')}}>Resize Canvas<//>

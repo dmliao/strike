@@ -10,7 +10,7 @@ export const DropdownItem = (props) => {
 		store.publish('hide_dropdown')
 	}
 	return (html`<li class="dropdown-item">
-		<button class="dropdown-item-button" onclick=${onclick}>
+		<button title=${props.title} class="dropdown-item-button" onclick=${onclick}>
 			${props.children}
 		</button>
 	</li>`)

@@ -4,8 +4,8 @@ import store from '../foundation/store.js';
 
 class UndoStack {
 	constructor(artwork) {
-		this.operationsPerSnapshot = 8;
-		this.maxSnapshots = 8;
+		this.operationsPerSnapshot = 3;
+		this.maxSnapshots = 15;
 
 		/*
 			each item in the snapshotStack is an obj of the form
