@@ -1,4 +1,4 @@
-import { html } from '/node_modules/htm/preact/standalone.mjs';
+import { html } from '/src/vendor/preact.js';
 import store from '../foundation/store.js';
 
 import { ToolButton, IconButton } from './components/tool_button.js'

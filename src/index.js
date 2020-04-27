@@ -1,4 +1,4 @@
-import { html, render } from '/node_modules/htm/preact/standalone.mjs'
+import { html, render } from '/src/vendor/preact.js'
 
 import App from './app.js';
 

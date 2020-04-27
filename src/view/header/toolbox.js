@@ -1,4 +1,4 @@
-import { html, render, useState, useEffect } from '/node_modules/htm/preact/standalone.mjs';
+import { html, render, useState, useEffect } from '/src/vendor/preact.js';
 import { toolId } from '../../frame/tools.js';
 import { ToolButton } from '../components/tool_button.js';
 

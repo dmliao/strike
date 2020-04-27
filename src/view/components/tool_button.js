@@ -1,4 +1,4 @@
-import { html, useState, useEffect } from '/node_modules/htm/preact/standalone.mjs';
+import { html, useState, useEffect } from '/src/vendor/preact.js';
 import store from '../../foundation/store.js';
 
 
