@@ -13,7 +13,7 @@ class Artwork {
 		this.app = new PIXI.Application({
 			width: element.offsetWidth,
 			height: element.offsetHeight,
-			backgroundColor: 0x111111
+			backgroundColor: 0x1b1b1b
 		});
 		this.app.resizeTo = element;
 
@@ -45,7 +45,14 @@ class Artwork {
 
 		element.appendChild(this.app.view);
 
-		this.new(800, 600)
+		const defaultWidth = element.offsetWidth;
+		const defaultHeight = element.offsetHeight;
+
+		let params = (new URL(document.location)).searchParams;
+		let w = parseInt(params.get("w") || 0, 10) || defaultWidth;
+		let h = parseInt(params.get("h") || 0, 10) || defaultHeight;
+
+		this.new(w, h);
 		this._bindListeners();
 
 	}
@@ -97,7 +104,11 @@ class Artwork {
 
 	resetViewport() {
 		this.viewport.scaled = 1;
-		this.viewport.center = new PIXI.Point(this.renderTextureSprite.width / 2, this.renderTextureSprite.height / 2)
+		console.log(this.viewport.screenWidth)
+		console.log(this.app.renderer.width)
+		console.log(this.renderTexture.width)
+		this.viewport.left = - this.app.renderer.width / 2 + this.renderTextureSprite.width / 2;
+		this.viewport.top = - this.app.renderer.height / 2 + this.renderTextureSprite.height / 2;
 	}
 
 	activateMoveViewport() {

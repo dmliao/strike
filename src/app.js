@@ -12,6 +12,10 @@ PIXI.settings.ROUND_PIXELS = true;
 PIXI.settings.PRECISION_FRAGMENT = PIXI.PRECISION.HIGH;
 PIXI.settings.MIPMAP_TEXTURES = PIXI.MIPMAP_MODES.OFF;
 
+store.subscribe('dimensions', (dim) => {
+	document.title = "Strike | " + dim.width + "x" + dim.height;
+}) ;
+
 // setup brush tool
 store.update('eraser.size', 8);
 store.update('tool', 'PAINT');
