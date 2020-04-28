@@ -106,8 +106,9 @@ class Paint extends Tool {
 				this.brush.angle = point_direction(this.previousPoint.x, this.previousPoint.y, newPoint.x, newPoint.y);
 			}
 			this._strokeLine(renderer, renderTexture, newPoint, this.previousPoint);
-			this._strokePoint(renderer, renderTexture, newPoint.x, newPoint.y);
-		}
+		} 
+		
+		this._strokePoint(renderer, renderTexture, newPoint.x, newPoint.y);
 
 		this.stroke.push({
 			x: newPoint.x,
@@ -149,7 +150,7 @@ class Paint extends Tool {
 			y: y,
 			size: this.brushSize,
 			angle: this.brush.angle,
-			shape: this.brushSize,
+			shape: this.brushShape,
 			color: this.color,
 		});
 
@@ -167,9 +168,9 @@ class Paint extends Tool {
 			this._updateBrushTemporary(point.size, point.shape, point.color);
 			if (prev) {
 				this.brush.angle = point.angle;
-				this._strokeLine(renderer, renderTexture, point, prev);
-				this._strokePoint(renderer, renderTexture, point.x, point.y);
+				this._strokeLine(renderer, renderTexture, point, prev);	
 			}
+			this._strokePoint(renderer, renderTexture, point.x, point.y);
 
 			prev = point;
 		}
