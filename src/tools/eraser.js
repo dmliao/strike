@@ -34,6 +34,7 @@ class Eraser extends Paint {
 		super.updateBrush({size, shape, color});
 		if (this.blendMode) {
 			this.brush.blendMode = this.blendMode;
+			this.lineBrush.blendMode = this.blendMode;
 		}
 	}
 
@@ -41,6 +42,7 @@ class Eraser extends Paint {
 		super._updateBrushTemporary(size, shape, color);
 		if (this.blendMode) {
 			this.brush.blendMode = this.blendMode;
+			this.lineBrush.blendMode = this.blendMode;
 		}
 	}
 }
