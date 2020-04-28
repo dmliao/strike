@@ -21,6 +21,7 @@ class Paint extends Tool {
 				
 		// prepare circle texture, that will be our brush
 		this.brush = new PIXI.Graphics();
+		this.lineBrush = new PIXI.Graphics();
 		this.toolType = toolId.PAINT;
 
 		this.subscribe();
@@ -103,6 +104,8 @@ class Paint extends Tool {
 				this._strokePoint(renderer, renderTexture, x, y);
 			});
 			*/
+			this._strokeLine(renderer, renderTexture, newPoint, this.previousPoint);
+			//this._strokeLine(renderer, renderTexture, new PIXI.Point(1, 1), new PIXI.Point(1, 2))
 			this._strokePoint(renderer, renderTexture, newPoint.x, newPoint.y)
 		}
 
@@ -123,6 +126,20 @@ class Paint extends Tool {
 		this.brush.position.y = y;
 
 		renderer.render(this.brush, renderTexture, false, null, false);
+	}
+
+	_strokeLine(renderer, renderTexture, newPoint, previousPoint) {
+		console.log(previousPoint, newPoint)
+		this.lineBrush.clear();
+		this.lineBrush.lineStyle({
+			width: this.brushSize,
+			color: this.color,
+			native: false,
+		})
+		this.lineBrush.moveTo(previousPoint.x + 0.5, previousPoint.y + 0.5)
+		this.lineBrush.lineTo(newPoint.x + 0.5, newPoint.y + 0.5)
+
+		renderer.render(this.lineBrush, renderTexture, false, null, false);
 	}
 
 	end(renderer, renderTexture, event, artwork) {
