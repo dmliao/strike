@@ -22,6 +22,7 @@ class Paint extends Tool {
 		// prepare circle texture, that will be our brush
 		this.brush = new PIXI.Graphics();
 		this.lineBrush = new PIXI.Graphics();
+		this.lineStyle = {};
 		this.toolType = toolId.PAINT;
 
 		this.subscribe();
@@ -80,6 +81,11 @@ class Paint extends Tool {
 			this.shouldRotateBrush = false;
 		}
 		this.brush.endFill();
+		this.lineStyle = {
+			width: size,
+			color: color,
+			native: false,
+		};
 	}
 
 	begin(renderer, renderTexture, event, artwork) {
@@ -99,14 +105,8 @@ class Paint extends Tool {
 			if (this.shouldRotateBrush && this.brushSize > 1) {
 				this.brush.angle = point_direction(this.previousPoint.x, this.previousPoint.y, newPoint.x, newPoint.y);
 			}
-			/*
-			bresenham(this.previousPoint.x, this.previousPoint.y, newPoint.x, newPoint.y, (x, y) => {
-				this._strokePoint(renderer, renderTexture, x, y);
-			});
-			*/
 			this._strokeLine(renderer, renderTexture, newPoint, this.previousPoint);
-			//this._strokeLine(renderer, renderTexture, new PIXI.Point(1, 1), new PIXI.Point(1, 2))
-			this._strokePoint(renderer, renderTexture, newPoint.x, newPoint.y)
+			this._strokePoint(renderer, renderTexture, newPoint.x, newPoint.y);
 		}
 
 		this.stroke.push({
@@ -131,11 +131,7 @@ class Paint extends Tool {
 	_strokeLine(renderer, renderTexture, newPoint, previousPoint) {
 		console.log(previousPoint, newPoint)
 		this.lineBrush.clear();
-		this.lineBrush.lineStyle({
-			width: this.brushSize,
-			color: this.color,
-			native: false,
-		})
+		this.lineBrush.lineStyle(this.lineStyle);
 		this.lineBrush.moveTo(previousPoint.x + 0.5, previousPoint.y + 0.5)
 		this.lineBrush.lineTo(newPoint.x + 0.5, newPoint.y + 0.5)
 
@@ -171,9 +167,8 @@ class Paint extends Tool {
 			this._updateBrushTemporary(point.size, point.shape, point.color);
 			if (prev) {
 				this.brush.angle = point.angle;
-				bresenham(prev.x, prev.y, point.x, point.y, (x, y) => {
-					this._strokePoint(renderer, renderTexture, x, y);
-				});
+				this._strokeLine(renderer, renderTexture, point, prev);
+				this._strokePoint(renderer, renderTexture, point.x, point.y);
 			}
 
 			prev = point;
