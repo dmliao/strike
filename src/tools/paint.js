@@ -90,6 +90,9 @@ class Paint extends Tool {
 		const viewport = artwork.getViewport();
 		
 		let newPoint = new PIXI.Point(this.getX(event, viewport), this.getY(event, viewport));
+		if (this.previousPoint && Math.abs(this.previousPoint.x - newPoint.x) < 0.01 && Math.abs(this.previousPoint.y - newPoint.y) < 0.01) {
+			return; // abort early, nothing moved.
+		}
 
 		if (this.previousPoint) {
 			if (this.shouldRotateBrush && this.brushSize > 1) {

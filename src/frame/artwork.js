@@ -130,10 +130,13 @@ class Artwork {
 
 		this.viewport.addChild(this.renderTextureSprite);
 
-		this.renderTextureSprite.interactive = true;
-		this.renderTextureSprite.on('pointerdown', this.pointerDown.bind(this));
-		this.renderTextureSprite.on('pointerup', this.pointerUp.bind(this));
-		this.renderTextureSprite.on('pointermove', this.pointerMove.bind(this));
+		if (!this.app.stage.interactive) {
+			this.app.stage.interactive = true;
+			this.app.stage.on('pointerdown', this.pointerDown.bind(this));
+			this.app.stage.on('pointerup', this.pointerUp.bind(this));
+			this.app.stage.on('pointerupoutside', this.pointerUp.bind(this));
+			this.app.stage.on('pointermove', this.pointerMove.bind(this));
+		}
 
 		if (this.shader) {
 			this.renderTextureSprite.filters = [this.shader]
@@ -288,7 +291,8 @@ class Artwork {
 
 	_copyRenderTexture() {
 		const snapshotTexture = PIXI.RenderTexture.create(this.renderTexture.width, this.renderTexture.height);
-		this.app.renderer.render(this.renderTextureSprite, snapshotTexture, true, null, false);
+		const snapSprite = new PIXI.Sprite(this.renderTexture);
+		this.app.renderer.render(snapSprite, snapshotTexture, true, null, false);
 		return snapshotTexture;
 	}
 
