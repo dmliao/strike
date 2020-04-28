@@ -278,3 +278,21 @@ input[type=number] {
 .h-gap {
 	width: 20px;
 }
+
+.modal h1 {
+	margin-bottom: 1em;
+	font-size: 24px;
+}
+
+.modal p {
+	margin-bottom: 0.5em;
+}
+
+.modal ul {
+	list-style: disc;
+	padding-left: 40px;
+}
+
+.modal li {
+	margin-bottom: 1em;
+}
