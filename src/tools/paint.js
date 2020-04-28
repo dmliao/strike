@@ -98,9 +98,12 @@ class Paint extends Tool {
 			if (this.shouldRotateBrush && this.brushSize > 1) {
 				this.brush.angle = point_direction(this.previousPoint.x, this.previousPoint.y, newPoint.x, newPoint.y);
 			}
+			/*
 			bresenham(this.previousPoint.x, this.previousPoint.y, newPoint.x, newPoint.y, (x, y) => {
 				this._strokePoint(renderer, renderTexture, x, y);
 			});
+			*/
+			this._strokePoint(renderer, renderTexture, newPoint.x, newPoint.y)
 		}
 
 		this.stroke.push({
