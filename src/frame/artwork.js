@@ -9,6 +9,7 @@ let EMPTY_SPRITE = new PIXI.Sprite(PIXI.Texture.EMPTY);
 class Artwork {
 
 	constructor(element) {
+		store.update('dirty', false);
 		this.undo = new UndoStack(this);
 		this.app = new PIXI.Application({
 			width: element.offsetWidth,
@@ -104,9 +105,6 @@ class Artwork {
 
 	resetViewport() {
 		this.viewport.scaled = 1;
-		console.log(this.viewport.screenWidth)
-		console.log(this.app.renderer.width)
-		console.log(this.renderTexture.width)
 		this.viewport.left = - this.app.renderer.width / 2 + this.renderTextureSprite.width / 2;
 		this.viewport.top = - this.app.renderer.height / 2 + this.renderTextureSprite.height / 2;
 	}
@@ -167,6 +165,8 @@ class Artwork {
 			this.app.renderer.render(EMPTY_SPRITE, this.renderTexture, true, null, false);
 		}
 
+		store.update('dirty', false);
+
 		this.undo.reset();
 		this.resetViewport();
 	}
@@ -201,7 +201,6 @@ class Artwork {
 						self.resize(img.width, img.height);
 						self.app.renderer.render(newTextureSprite, self.renderTexture, true, null, false);
 
-						console.log('loaded image')
 						self.undo.reset();
 						self.resetViewport();
 					} 
@@ -215,12 +214,14 @@ class Artwork {
 
 	saveImage() {
 		this.app.renderer.extract.canvas(this.renderTexture).toBlob(function (b) {
+			const timestamp = Date.now().toString();
 			var a = document.createElement('a');
 			document.body.append(a);
-			a.download = 'strike-raw.png';
+			a.download = `strike-raw-${timestamp}.png`;
 			a.href = URL.createObjectURL(b);
 			a.click();
 			a.remove();
+			store.update('dirty', false);
 		}, 'image/png');
 	}
 
@@ -228,9 +229,10 @@ class Artwork {
 		const snapshot = new PIXI.Sprite(this.renderTexture);
 		snapshot.filters = [this.shader];
 		this.app.renderer.extract.canvas(snapshot).toBlob(function (b) {
+			const timestamp = Date.now().toString();
 			var a = document.createElement('a');
 			document.body.append(a);
-			a.download = 'strike-export.png';
+			a.download = `strike-export-${timestamp}.png`;
 			a.href = URL.createObjectURL(b);
 			a.click();
 			a.remove();
@@ -350,6 +352,7 @@ class Artwork {
 
 	addUndoable(toolName, op, createSnapshot) {
 		this.undo.addUndoable(toolName, op, createSnapshot);
+		store.update('dirty', true);
 	}
 
 	applySavedOperation(op) {

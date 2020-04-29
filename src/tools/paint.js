@@ -130,7 +130,6 @@ class Paint extends Tool {
 	}
 
 	_strokeLine(renderer, renderTexture, newPoint, previousPoint) {
-		console.log(previousPoint, newPoint)
 		this.lineBrush.clear();
 		this.lineBrush.lineStyle(this.lineStyle);
 		this.lineBrush.moveTo(previousPoint.x + 0.5, previousPoint.y + 0.5)

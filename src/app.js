@@ -12,9 +12,35 @@ PIXI.settings.ROUND_PIXELS = true;
 PIXI.settings.PRECISION_FRAGMENT = PIXI.PRECISION.HIGH;
 PIXI.settings.MIPMAP_TEXTURES = PIXI.MIPMAP_MODES.OFF;
 
-store.subscribe('dimensions', (dim) => {
-	document.title = "Strike | " + dim.width + "x" + dim.height;
-}) ;
+const setDocumentTitle = () => {
+	const dim = store.get('dimensions');
+	const isDirtyMarker = store.get('dirty') ? '*' : ''
+	if (!dim) {
+		document.title = "Strike";
+		return;
+	}
+	document.title = "Strike | " + dim.width + "x" + dim.height + isDirtyMarker;
+}
+
+store.subscribe('dimensions', () => {
+	setDocumentTitle();
+});
+
+
+store.subscribe('dirty', () => {
+	setDocumentTitle();
+});
+
+window.addEventListener('beforeunload', (e) => {
+	const isDirty = store.get('dirty');
+	if (!isDirty) {
+		return;
+	}
+
+    const confirmExit = 'Exit without saving?';
+    (e || window.event).returnValue = confirmExit;
+    return confirmExit;
+});
 
 // setup brush tool
 store.update('eraser.size', 8);
