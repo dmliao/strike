@@ -1,4 +1,4 @@
-import { html, render } from '/src/vendor/preact.js'
+import { html, render } from './vendor/preact.js'
 
 import App from './app.js';
 

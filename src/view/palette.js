@@ -1,4 +1,4 @@
-import { html, render, useState } from '/src/vendor/preact.js';
+import { html, render, useState } from '../vendor/preact.js';
 
 import store from '../foundation/store.js';
 import { colors } from '../palette/raw_colors.js';

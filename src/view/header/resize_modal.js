@@ -1,4 +1,4 @@
-import { html, useState, useEffect } from '/src/vendor/preact.js';
+import { html, useState, useEffect } from '../../vendor/preact.js';
 import { Modal } from '../components/modal.js';
 import storeSingleton from '../../foundation/store.js';
 

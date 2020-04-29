@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "vendor": "node tools/gen-vendor.js"
+    "test": "echo \"Sorry, no automated tests (yet...?)\" && exit 1",
+    "vendor": "node tools/gen-vendor.js",
+    "build": "node tools/build.js",
+    "zip": "node tools/zip.js"
   },
   "author": "",
   "license": "ISC",

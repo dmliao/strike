@@ -1,4 +1,4 @@
-import { html, render, useState, useEffect } from '/src/vendor/preact.js';
+import { html, render, useState, useEffect } from '../../vendor/preact.js';
 import store from '../../foundation/store.js';
 import { toolId } from '../../frame/tools.js';
 

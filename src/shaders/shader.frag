@@ -11,8 +11,7 @@ uniform highp vec4 inputSize;
 uniform sampler2D palette;
 uniform float swatchSize;
 
-// Currently, this is a dummy shader that just removes red.
-// We want to eventually sample a palette, and then use that 
+// This shader samples a palette, and then use that 
 // to produce our dither patterns.
 void main(void) {
 	float value = texture2D(uSampler, vTextureCoord).r;

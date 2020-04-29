@@ -1,16 +1,27 @@
 const path = require('path')
 const fs = require('fs')
-const { spawn } = require('child_process')
+const { spawnSync } = require('child_process')
+const buildDist = require('./dist')
 
-const buildPath = path.resolve(__dirname, '..', 'build')
-if (!fs.existsSync(buildPath)) {
-	fs.mkdirSync(buildPath, { recursive: true })
+const buildDir = path.resolve(__dirname, '..', 'build');
+if (!fs.existsSync(buildDir)) {
+	fs.mkdirSync(buildDir, { recursive: true })
 }
 
-const zip = spawn('7z', ['a', '-tzip', path.resolve(buildPath, 'build.zip'), 
-	path.resolve(__dirname, '..', 'index.html'),
-	path.resolve(__dirname, '..', 'src'),
+const buildPath = path.resolve(buildDir, 'build.zip')
+if (fs.existsSync(buildPath)) {
+	fs.unlinkSync(buildPath)
+}
+
+buildDist();
+
+const zip = spawnSync('7z', ['a', '-tzip', path.resolve(buildPath), 
+	path.resolve(__dirname, '..', 'dist', 'index.html'),
+	path.resolve(__dirname, '..', 'dist', 'index.js'),
+	path.resolve(__dirname, '..', 'dist', 'dither-palette.png'),
+	path.resolve(__dirname, '..', 'dist', 'shader.frag'),
+	path.resolve(__dirname, '..', 'src', 'vendor'),
 	path.resolve(__dirname, '..', 'styles')
 ]);
 
-zip.stdout.pipe(process.stdout)
+console.log(zip.stdout.toString())

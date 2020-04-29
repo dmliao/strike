@@ -1,4 +1,4 @@
-import { html, useEffect } from '/src/vendor/preact.js'
+import { html, useEffect } from './vendor/preact.js'
 
 import store from './foundation/store.js';
 
