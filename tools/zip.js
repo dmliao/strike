@@ -7,7 +7,7 @@ if (!fs.existsSync(buildDir)) {
 	fs.mkdirSync(buildDir, { recursive: true })
 }
 
-const buildPath = path.resolve(buildDir, 'build-raw.zip')
+const buildPath = path.resolve(buildDir, 'build.zip')
 if (fs.existsSync(buildPath)) {
 	fs.unlinkSync(buildPath)
 }
