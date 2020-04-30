@@ -172,6 +172,7 @@ class Artwork {
 	}
 
 	importImage() {
+		console.log('begin import image')
 		const self = this; // hooray for waterfall chaining.
 
 		const ext = ['png', 'jpg', 'jpeg']
@@ -180,6 +181,7 @@ class Artwork {
 		input.accept = '.png, .jpg, .jpeg'
 		input.setAttribute('multiple', 'multiple')
 		input.onchange = (e) => {
+			console.log('received files', e.target.files)
 			for (const file of e.target.files) {
 				const pieces = file.name.toLowerCase().split('.')
 				const fileExt = pieces[pieces.length - 1]
@@ -193,7 +195,7 @@ class Artwork {
 				reader.addEventListener("load", function (ev) {
 					console.log('file successfully loaded', ev)
 					// convert image file to base64 string
-					const img = document.createElement('img');
+					const img = new Image();
 					img.src = reader.result;
 					img.onload = (ev2) => {
 						console.log('parsed imported image', ev2);
