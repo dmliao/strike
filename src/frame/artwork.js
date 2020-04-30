@@ -174,23 +174,29 @@ class Artwork {
 	importImage() {
 		const self = this; // hooray for waterfall chaining.
 
-		const ext = 'png'
+		const ext = ['png', 'jpg', 'jpeg']
 		const input = document.createElement('input')
 		input.type = 'file'
-		input.accept = '.png, .PNG'
+		input.accept = '.png, .jpg, .jpeg'
 		input.setAttribute('multiple', 'multiple')
 		input.onchange = (e) => {
 			for (const file of e.target.files) {
-				if (file.name.toLowerCase().indexOf('.' + ext) < 0) { continue }
+				const pieces = file.name.toLowerCase().split('.')
+				const fileExt = pieces[pieces.length - 1]
+				if (ext.indexOf(fileExt) < 0) { 
+					console.log('Loaded an invalid file', file.name)
+					continue
+				}
 
 				// do something with the file.
 				const reader = new FileReader()
-				reader.addEventListener("load", function () {
+				reader.addEventListener("load", function (ev) {
+					console.log('file successfully loaded', ev)
 					// convert image file to base64 string
 					const img = document.createElement('img');
 					img.src = reader.result;
-					img.onload = () => {
-							
+					img.onload = (ev2) => {
+						console.log('parsed imported image', ev2);
 						const q = new RgbQuant({
 							palette: rgbQuantColors(),
 						})
