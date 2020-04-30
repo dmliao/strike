@@ -6,7 +6,6 @@
   "scripts": {
     "test": "echo \"Sorry, no automated tests (yet...?)\" && exit 1",
     "vendor": "node tools/gen-vendor.js",
-    "build": "node tools/build.js",
     "zip": "node tools/zip.js",
     "pwa": "pwa-asset-generator assets/icon.png ./pwa --favicon -i ./index.html -m ./manifest.json -b \"rgba(0,0,0,1)\""
   },
