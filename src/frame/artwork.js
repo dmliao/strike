@@ -176,46 +176,52 @@ class Artwork {
 		const self = this; // hooray for waterfall chaining.
 
 		const ext = ['png', 'jpg', 'jpeg']
-		const input = document.createElement('input')
-		input.type = 'file'
-		input.accept = '.png, .jpg, .jpeg'
-		input.setAttribute('multiple', 'multiple')
-		input.onchange = (e) => {
-			console.log('received files', e.target.files)
-			for (const file of e.target.files) {
-				const pieces = file.name.toLowerCase().split('.')
-				const fileExt = pieces[pieces.length - 1]
-				if (ext.indexOf(fileExt) < 0) { 
-					console.log('Loaded an invalid file', file.name)
-					continue
+		let input = document.getElementById('hidden').getElementsByTagName('INPUT')[0]
+		if (!input) {
+			input = document.createElement('input')
+			document.getElementById('hidden').appendChild(input);
+
+			input.type = 'file'
+			input.accept = '.png, .jpg, .jpeg'
+			input.setAttribute('multiple', 'multiple')
+			input.addEventListener('change', (e) => {
+				console.log('received files', e.target.files)
+				for (const file of e.target.files) {
+					const pieces = file.name.toLowerCase().split('.')
+					const fileExt = pieces[pieces.length - 1]
+					if (ext.indexOf(fileExt) < 0) {
+						console.log('Loaded an invalid file', file.name)
+						continue
+					}
+
+					// do something with the file.
+					const reader = new FileReader()
+					reader.addEventListener("load", function (ev) {
+						console.log('file successfully loaded', ev)
+						// convert image file to base64 string
+						const img = new Image();
+						img.src = reader.result;
+						img.onload = (ev2) => {
+							console.log('parsed imported image', ev2);
+							const q = new RgbQuant({
+								palette: rgbQuantColors(),
+							})
+
+							const pixelArray = q.reduce(img);
+							const newTexture = PIXI.Texture.fromBuffer(pixelArray, img.width, img.height);
+							const newTextureSprite = new PIXI.Sprite(newTexture);
+							self.resize(img.width, img.height);
+							self.app.renderer.render(newTextureSprite, self.renderTexture, true, null, false);
+
+							self.undo.reset();
+							self.resetViewport();
+							document.getElementById('hidden').removeChild(input)
+						}
+
+					}, false);
+					reader.readAsDataURL(file)
 				}
-
-				// do something with the file.
-				const reader = new FileReader()
-				reader.addEventListener("load", function (ev) {
-					console.log('file successfully loaded', ev)
-					// convert image file to base64 string
-					const img = new Image();
-					img.src = reader.result;
-					img.onload = (ev2) => {
-						console.log('parsed imported image', ev2);
-						const q = new RgbQuant({
-							palette: rgbQuantColors(),
-						})
-
-						const pixelArray = q.reduce(img);
-						const newTexture = PIXI.Texture.fromBuffer(pixelArray, img.width, img.height);
-						const newTextureSprite = new PIXI.Sprite(newTexture);
-						self.resize(img.width, img.height);
-						self.app.renderer.render(newTextureSprite, self.renderTexture, true, null, false);
-
-						self.undo.reset();
-						self.resetViewport();
-					} 
-
-				}, false);
-				reader.readAsDataURL(file)
-			}
+			});
 		}
 		input.click()
 	}
