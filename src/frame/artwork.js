@@ -29,10 +29,7 @@ class Artwork {
 
 		this.renderTexture = undefined;
 		this.renderTextureSprite = undefined;
-		this.app.loader.add('shader', 'src/shaders/shader.frag')
-			.add('palette', 'src/palette/dither-palette.png')
-			.load(this.loadResources.bind(this));
-
+		
 		this.dragging = false;
 		this.currentTool = tools.get(store.get('tool'));
 		store.subscribe('tool', (newTool) => {
@@ -97,6 +94,10 @@ class Artwork {
 		store.listen('export', () => {
 			this.exportImage();
 		})
+
+		store.subscribe('resources', (res) => {
+			this._onLoadResources(res);
+		})
 	}
 
 	getViewport() {
@@ -121,16 +122,9 @@ class Artwork {
 		this.viewport.plugins.remove('drag');
 	}
 
-	loadResources(_loader, res) {
-		const texture = res.palette.texture;
-
-		const uniforms = {
-			palette: texture,
-			swatchSize: 8
-		}
-
-		this.shader = new PIXI.Filter('', res.shader.data, uniforms);
-		this.renderTextureSprite.filters = [this.shader]
+	_onLoadResources(res) {
+		this.shader = res.shader;
+		this.renderTextureSprite.filters = [this.shader];
 	}
 
 	_createSurface(width, height) {

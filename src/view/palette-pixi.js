@@ -73,11 +73,11 @@ class Palette {
 			backgroundColor: 0x000000
 		});
 
-		this.app.loader.add('shader', 'src/shaders/shader.frag')
-			.add('palette', 'src/palette/dither-palette.png')
-			.load(this.loadResources.bind(this));
-
 		element.appendChild(this.app.view);
+
+		storeSingleton.subscribe('resources', (res) => {
+			this._onLoadResources(res);
+		})
 	}
 
 	createSwatch(index, color) {
@@ -85,17 +85,8 @@ class Palette {
 		this.app.stage.addChild(swatch.getGraphic())
 	}
 
-	loadResources(_loader, res) {
-		const texture = res.palette.texture;
-
-		const uniforms = {
-			palette: texture,
-			swatchSize: 8
-		}
-
-		this.shader = new PIXI.Filter('', res.shader.data, uniforms);
-
-		// create swatches
+	_onLoadResources(res) {
+		this.shader = res.shader;
 		for (let i = 0; i < colors.length; i++ ) {
 			this.createSwatch(i, colors[i])
 		}

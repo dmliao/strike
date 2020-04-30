@@ -47,6 +47,20 @@ store.update('eraser.size', 8);
 store.update('tool', 'PAINT');
 store.update('color', 0xffffff);
 
+// load resources
+PIXI.Loader.shared.add('shader', 'src/shaders/shader.frag')
+.add('palette', 'src/palette/dither-palette.png')
+.load((_loader, res) => {
+	const texture = res.palette.texture;
+	const uniforms = {
+		palette: texture,
+		swatchSize: 8
+	}
+
+	const shader = new PIXI.Filter('', res.shader.data, uniforms);
+	store.update('resources', { shader });
+});
+
 const App = (props) => {
 	useEffect(() => {
 		const artwork = new Artwork(document.getElementById("main"));
