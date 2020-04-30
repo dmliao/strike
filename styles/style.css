@@ -24,6 +24,7 @@ button:hover {
 body {
   height: 100vh;
   width: 100vw;
+  overflow: hidden;
 }
 
 /* include border and padding in element width and height */

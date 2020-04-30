@@ -7,7 +7,8 @@
     "test": "echo \"Sorry, no automated tests (yet...?)\" && exit 1",
     "vendor": "node tools/gen-vendor.js",
     "build": "node tools/build.js",
-    "zip": "node tools/zip.js"
+    "zip": "node tools/zip.js",
+    "pwa": "pwa-asset-generator assets/icon.png ./pwa --favicon -i ./index.html -m ./manifest.json -b \"rgba(0,0,0,1)\""
   },
   "author": "",
   "license": "ISC",
@@ -17,5 +18,8 @@
     "pixi.js": "^5.2.2",
     "preact": "^10.4.1",
     "rgbquant": "^1.1.2"
+  },
+  "devDependencies": {
+    "pwa-asset-generator": "^2.3.0"
   }
 }
