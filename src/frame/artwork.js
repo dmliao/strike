@@ -29,7 +29,7 @@ class Artwork {
 
 		this.renderTexture = undefined;
 		this.renderTextureSprite = undefined;
-		
+
 		this.dragging = false;
 		this.currentTool = tools.get(store.get('tool'));
 		store.subscribe('tool', (newTool) => {
@@ -190,31 +190,39 @@ class Artwork {
 					// do something with the file.
 					const reader = new FileReader()
 					reader.addEventListener("load", function (ev) {
-						// convert image file to base64 string
-						const img = new Image();
-						img.src = reader.result;
-						img.onload = (ev2) => {
-							const q = new RgbQuant({
-								palette: rgbQuantColors(),
-							})
-
-							const pixelArray = q.reduce(img);
-							const newTexture = PIXI.Texture.fromBuffer(pixelArray, img.width, img.height);
-							const newTextureSprite = new PIXI.Sprite(newTexture);
-							self.resize(img.width, img.height);
-							self.app.renderer.render(newTextureSprite, self.renderTexture, true, null, false);
-
-							self.undo.reset();
-							self.resetViewport();
+						self._loadImage(reader.result, () => {
 							document.getElementById('hidden').removeChild(input)
-						}
-
+						});
 					}, false);
 					reader.readAsDataURL(file)
 				}
 			});
 		}
 		input.click()
+	}
+
+	_loadImage(imgSrc, callback) {
+		const self = this;
+		// convert image file to base64 string
+		const img = new Image();
+		img.src = imgSrc;
+		img.onload = (ev2) => {
+			const q = new RgbQuant({
+				palette: rgbQuantColors(),
+			})
+
+			const pixelArray = q.reduce(img);
+			const newTexture = PIXI.Texture.fromBuffer(pixelArray, img.width, img.height);
+			const newTextureSprite = new PIXI.Sprite(newTexture);
+			self.resize(img.width, img.height);
+			self.app.renderer.render(newTextureSprite, self.renderTexture, true, null, false);
+
+			self.undo.reset();
+			self.resetViewport();
+			if (callback) {
+				callback();
+			}
+		}
 	}
 
 	saveImage() {

@@ -11,7 +11,6 @@ const AboutModal = (props) => {
 		<h1>Usage Notes:</h1>
 		<ul>
 			<li>You can use two finger pinch or mouse wheel / scroll to zoom the canvas in and out.</li>
-			<li>Canvas size is printed in the tab title. By default, the canvas size is the size of the visible drawing space. You can create a document with a custom canvas size by setting w and h query params. For example, <pre>?w=800&h=600</pre> at the end of the URL will give you an 800x600 size canvas.</li>
 			<li>Undo and Redo are still pretty flaky. Use at your own risk. There is currently a 50 action hard undo-limit, but because of the inconsistent cleanup you might not have 50 undo states available.</li>
 		</ul>
 		<hr />
