@@ -31,17 +31,6 @@ store.subscribe('dirty', () => {
 	setDocumentTitle();
 });
 
-window.addEventListener('beforeunload', (e) => {
-	const isDirty = store.get('dirty');
-	if (!isDirty) {
-		return;
-	}
-
-    const confirmExit = 'Exit without saving?';
-    (e || window.event).returnValue = confirmExit;
-    return confirmExit;
-});
-
 // setup brush tool
 store.update('eraser.size', 8);
 store.update('tool', 'PAINT');
@@ -64,7 +53,9 @@ PIXI.Loader.shared.add('shader', 'src/shaders/shader.frag')
 const App = (props) => {
 	useEffect(() => {
 		const artwork = new Artwork(document.getElementById("main"));
-		const palette = new Palette(document.getElementById("palette"))
+		const palette = new Palette(document.getElementById("palette"));
+			
+
 	}, [])
 	return (html`<${Layout}>
 	<//>`);

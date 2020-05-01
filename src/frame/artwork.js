@@ -3,6 +3,7 @@ import tools, { toolId } from './tools.js';
 import { rgbQuantColors } from '../palette/raw_colors.js';
 
 import UndoStack from './undo_stack.js';
+import Autosave from './autosave.js';
 
 let EMPTY_SPRITE = new PIXI.Sprite(PIXI.Texture.EMPTY);
 
@@ -10,7 +11,10 @@ class Artwork {
 
 	constructor(element) {
 		store.update('dirty', false);
+
 		this.undo = new UndoStack(this);
+		this.autosave = new Autosave(this);
+
 		this.app = new PIXI.Application({
 			width: element.offsetWidth,
 			height: element.offsetHeight,
@@ -42,6 +46,7 @@ class Artwork {
 		});
 
 		element.appendChild(this.app.view);
+		this.element = element;
 
 		const defaultWidth = element.offsetWidth;
 		const defaultHeight = element.offsetHeight;
@@ -53,6 +58,11 @@ class Artwork {
 		this.new(w, h);
 		this._bindListeners();
 
+		// load autosave, if we have one
+		const autosaved = this.autosave.load()
+		if (autosaved) {
+			this._loadImage(autosaved)
+		} 
 	}
 
 	_bindListeners() {
@@ -60,7 +70,13 @@ class Artwork {
 		store.listen('new', (dimensions) => {
 			dimensions = dimensions || store.get('dimensions') || {};
 			const { width, height } = dimensions;
+			this.autosave.clear();
 			this.new(width || 800, height || 600);
+		})
+		
+		store.listen('new_fit', () => {
+			this.autosave.clear();
+			this.new(this.element.offsetWidth, this.element.offsetHeight);
 		})
 
 		store.listen('resize', (dim) => {
@@ -93,6 +109,14 @@ class Artwork {
 
 		store.listen('export', () => {
 			this.exportImage();
+		})
+
+		store.listen('on_undo_complete', () => {
+			this.autosave.save();
+		})
+
+		store.listen('on_redo_complete', () => {
+			this.autosave.save();
 		})
 
 		store.subscribe('resources', (res) => {
@@ -225,8 +249,12 @@ class Artwork {
 		}
 	}
 
+	getCanvas() {
+		return this.app.renderer.extract.canvas(this.renderTexture);
+	}
+
 	saveImage() {
-		this.app.renderer.extract.canvas(this.renderTexture).toBlob(function (b) {
+		this.getCanvas().toBlob(function (b) {
 			const timestamp = Date.now().toString();
 			var a = document.createElement('a');
 			document.body.append(a);
@@ -365,6 +393,7 @@ class Artwork {
 
 	addUndoable(toolName, op, createSnapshot) {
 		this.undo.addUndoable(toolName, op, createSnapshot);
+		this.autosave.save();
 		store.update('dirty', true);
 	}
 

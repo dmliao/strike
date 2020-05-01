@@ -11,13 +11,14 @@ A 1-bit painting app with some PWA support, for quick sketching or line drawing.
 * zoom via mouse scroll or two-finger pinch
 * basic image transform tools (flip / mirror / resize canvas)
 * save images as a 16-color greyscale (which will import back into Strike with all patterns intact), or as 1-bit black and white image
+* autosaving (see notes)
 
 ## Notes
 
 Strike is not meant to be a full-featured paint app, so has quite a few limitations. 
 
 * Undo / redo may slow down for large strokes or complex drawings. If they behave strangely, please file a bug report.
-* Be aware that there is no autosave feature at time of writing; continuously save snapshots of your work to avoid losing your progress.
+* There is a limited autosave feature; by default, starting up Strike will load up the previously drawn image. Creating a new canvas will erase the autosave. You can disable autosaves via the settings (gear) menu. Strike only autosaves one image at a time, so please regularly export your work.
 
 ## How to build locally
 

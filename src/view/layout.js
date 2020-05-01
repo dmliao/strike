@@ -11,6 +11,7 @@ import { ResizeModal, StretchModal } from './header/resize_modal.js'
 import UndoRedo from './sidebar/undo_redo.js'
 import BrushOptions from './sidebar/brush_options.js'
 import AboutModal from './about_modal.js';
+import SettingsModal from './settings_modal.js';
 
 const Layout = (props) => {
 	return (html`
@@ -18,6 +19,7 @@ const Layout = (props) => {
 		<div id="header">
 			<${DropdownButton} label="File" hideOnLeave>
 				<${DropdownItem} onclick=${() => { store.publish('new') }}>New Canvas<//>
+				<${DropdownItem} onclick=${() => { store.publish('new_fit') }}>New (Fit to screen)<//>
 				<${DropdownItem} onclick=${() => { store.publish('import') }}>Import Image<//>
 				<${DropdownItem} title="Saves canvas as a 16-color greyscale image, such that when the image is imported back into this tool, the dithers will render as you created them." onclick=${() => { store.publish('save') }}>Save Raw Image<//>
 				<${DropdownItem} title="Saves canvas as a 1-bit black and white image for exporting." onclick=${() => { store.publish('export') }}>Export 1-bit Image<//>
@@ -49,7 +51,8 @@ const Layout = (props) => {
 			}} />
 			</div>
 			<div class="sidebar-bottom">
-			<${IconButton} icon="icon-help" onclick=${() => { store.publish('modal_show', 'about')}} />
+			<${IconButton} title="Settings" icon="icon-cog" onclick=${() => { store.publish('modal_show', 'settings')}} />
+			<${IconButton} title="About" icon="icon-help" onclick=${() => { store.publish('modal_show', 'about')}} />
 			</div>
 		</div>
 		<div id="main">
@@ -58,6 +61,7 @@ const Layout = (props) => {
 		<${ResizeModal} />
 		<${StretchModal} />
 		<${AboutModal} />
+		<${SettingsModal} />
 	</main>
 	`);
 }

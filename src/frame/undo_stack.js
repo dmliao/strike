@@ -29,12 +29,14 @@ class UndoStack {
 			this.undo(1);
 			store.update('can_undo', this.canUndo());
 			store.update('can_redo', this.canRedo());
+			store.publish('on_undo_complete');
 
 		});
 		store.listen('redo', () => {
 			this.redo(1);
 			store.update('can_undo', this.canUndo());
 			store.update('can_redo', this.canRedo());
+			store.publish('on_redo_complete');
 		})
 	}
 

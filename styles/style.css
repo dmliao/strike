@@ -303,3 +303,17 @@ input[type=number] {
 .modal li {
 	margin-bottom: 1em;
 }
+
+.setting {
+	margin-bottom: 1em;
+}
+
+.setting-label {
+	font-size: 24px;
+}
+
+blockquote {
+	padding-left: 24px;
+	border-left: 2px solid #FFF;
+	margin: 1em 0;
+}
