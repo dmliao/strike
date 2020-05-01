@@ -4,7 +4,6 @@ import store from '../foundation/store.js';
 import { ToolButton, IconButton } from './components/tool_button.js'
 import { DropdownButton, DropdownItem } from './components/dropdown.js';
 import { toolId } from '../frame/tools.js'
-import { Palette } from './palette.js'
 
 import BrushShapes from './header/brush_shapes.js'
 import Toolbox from './header/toolbox.js'
@@ -34,7 +33,6 @@ const Layout = (props) => {
 				<div class="h-gap" />
 				<${Toolbox} />
 				<div id="palette" />
-				<!--${Palette} /-->
 			</div>
 			
 		</div>
