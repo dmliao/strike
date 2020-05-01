@@ -1,5 +1,4 @@
 import Tool from './base.js';
-import { bresenham } from '../utils/bresenham.js';
 import { point_direction } from '../utils/point_direction.js';
 
 import storeSingleton from "../foundation/store.js";
