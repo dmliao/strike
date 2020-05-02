@@ -316,3 +316,7 @@ blockquote {
 	border-left: 2px solid #FFF;
 	margin: 1em 0;
 }
+
+canvas {
+	image-rendering: optimizeSpeed;
+}
