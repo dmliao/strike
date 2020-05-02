@@ -3,24 +3,31 @@ import storeSingleton from "../foundation/store.js";
 class Autosave {
 	constructor(artwork) {
 		this.settingName = 'setting_autosave_enabled';
+		this.canUseLocalStorage = false;
 		this._initializeSetting();
 
 		this.artwork = artwork;
 		this.filename = 'autosave';
 		this.enabled = storeSingleton.get('autosave_enabled');
 
-		storeSingleton.subscribe('autosave_enabled', (val) => {
-			this.enabled = val;
-			window.localStorage.setItem(this.settingName, val ? 'true' : 'false')
-			if (!this.enabled) {
-				console.log('autosaves disabled; clearing current autosave.')
-				this.clear();
-			} else {
-				console.log('enabling autosaves. creating an autosave now...')
-				this.save();
-			}
-		});
+		console.log('does this browser support autosave? ', this.canUseLocalStorage);
+		storeSingleton.update('can_autosave', this.canUseLocalStorage);
 
+		if (this.canUseLocalStorage) {
+			console.log('is autosave enabled? ', this.enabled);
+			storeSingleton.subscribe('autosave_enabled', (val) => {
+				this.enabled = val;
+				window.localStorage.setItem(this.settingName, val ? 'true' : 'false')
+				if (!this.enabled) {
+					console.log('autosaves disabled; clearing current autosave.')
+					this.clear();
+				} else {
+					console.log('enabling autosaves. creating an autosave now...')
+					this.save();
+				}
+			});
+		}
+		
 		const self = this;
 			
 		window.addEventListener('beforeunload', (e) => {
@@ -30,7 +37,7 @@ class Autosave {
 			}
 
 			// if we have autosave enabled, we don't really have to worry about this
-			if (self.enabled) {
+			if (self.isEnabled()) {
 				return;
 			}
 
@@ -41,30 +48,36 @@ class Autosave {
 	}
 
 	_initializeSetting() {
-				
-		// load settings
-		let autosaveSetting = window.localStorage.getItem(this.settingName);
-		if (autosaveSetting === null) {
-			autosaveSetting = 'true'; // true is default
+
+		try {
+			// load settings
+			let autosaveSetting = window.localStorage.getItem(this.settingName);
+			if (autosaveSetting === null) {
+				autosaveSetting = 'true'; // true is default
+			}
+
+			storeSingleton.update('autosave_enabled', autosaveSetting === 'true' ? true : false);
+			this.canUseLocalStorage = true;
+		} catch (e) {
+			console.log('autosave disabled because we don\'t have access to localStorage');
+			storeSingleton.update('autosave_enabled', false);
+			this.canUseLocalStorage = false;
 		}
-
-		storeSingleton.update('autosave_enabled', autosaveSetting === 'true' ? true : false);
-
 	}
 
 	isEnabled() {
-		return this.enabled;
+		return this.canUseLocalStorage && this.enabled;
 	}
 
 	clear() {
-		if (!this.enabled) {
+		if (!this.isEnabled()) {
 			return;
 		}
 		window.localStorage.removeItem(this.filename);
 	}
 
 	load() {
-		if (!this.enabled) {
+		if (!this.isEnabled()) {
 			return undefined;
 		}
 		try {
@@ -81,7 +94,7 @@ class Autosave {
 	}
 
 	save() {
-		if (!this.enabled) {
+		if (!this.isEnabled()) {
 			return;
 		}
 		// oh well, this is kind of spaghetti-ing a bit
