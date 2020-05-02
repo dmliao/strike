@@ -11,6 +11,8 @@ PIXI.settings.RENDER_OPTIONS.antialias = false;
 PIXI.settings.ROUND_PIXELS = true;
 PIXI.settings.PRECISION_FRAGMENT = PIXI.PRECISION.HIGH;
 PIXI.settings.MIPMAP_TEXTURES = PIXI.MIPMAP_MODES.OFF;
+PIXI.Ticker.system.autoStart = false;
+PIXI.Ticker.system.stop()
 
 const setDocumentTitle = () => {
 	const dim = store.get('dimensions');

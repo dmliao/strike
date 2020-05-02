@@ -18,8 +18,17 @@ class Artwork {
 		this.app = new PIXI.Application({
 			width: element.offsetWidth,
 			height: element.offsetHeight,
-			backgroundColor: 0x1b1b1b
+			backgroundColor: 0x1b1b1b,
+
+			// this ensures that we don't redraw the canvas every frame.
+			// however, this also means that we need to call this.app.ticker.update() 
+			// every time the view changes
+			// (e.g. when we paint on the canvas, or when we move the view)
+			// so that the app knows to redraw it. The `render` function is provided to render
+			// something onto the canvas *and* update the ticker immediately afterwards.
+			autoStart: false 
 		});
+
 		this.app.resizeTo = element;
 
 		// create viewport
@@ -31,11 +40,18 @@ class Artwork {
 		this.app.stage.addChild(this.viewport)
 		this.viewport.wheel().decelerate();
 
+		// we need to redraw the surface when the viewport moves so that 
+		// we see the canvas's new position
+		this.viewport.on('moved', () => {
+			this.app.ticker.update();
+		})
+
 		this.renderTexture = undefined;
 		this.renderTextureSprite = undefined;
 
 		this.dragging = false;
 		this.currentTool = tools.get(store.get('tool'));
+		
 		store.subscribe('tool', (newTool) => {
 			this.currentTool = tools.get(newTool);
 			if (newTool === toolId.MOVE) {
@@ -57,6 +73,11 @@ class Artwork {
 
 		this.new(w, h);
 		this._bindListeners();
+
+		window.addEventListener('resize', () => {
+			// update the canvas so we get the full viewport
+			this.app.ticker.update();
+		});
 
 		// load autosave, if we have one
 		const autosaved = this.autosave.load()
@@ -132,6 +153,7 @@ class Artwork {
 		this.viewport.scaled = 1;
 		this.viewport.left = - this.app.renderer.width / 2 + this.renderTextureSprite.width / 2;
 		this.viewport.top = - this.app.renderer.height / 2 + this.renderTextureSprite.height / 2;
+		this.app.ticker.update();
 	}
 
 	activateMoveViewport() {
@@ -149,6 +171,7 @@ class Artwork {
 	_onLoadResources(res) {
 		this.shader = res.shader;
 		this.renderTextureSprite.filters = [this.shader];
+		this.app.ticker.update();
 	}
 
 	_createSurface(width, height) {
@@ -169,6 +192,8 @@ class Artwork {
 			this.renderTextureSprite.filters = [this.shader]
 		}
 
+		this.app.ticker.update();
+
 	}
 
 	new(width, height) {
@@ -180,7 +205,7 @@ class Artwork {
 			})
 		} else {
 			this.resize(width, height);
-			this.app.renderer.render(EMPTY_SPRITE, this.renderTexture, true, null, false);
+			this.render(EMPTY_SPRITE, this.renderTexture, true);
 		}
 
 		store.update('dirty', false);
@@ -242,6 +267,9 @@ class Artwork {
 			self.app.renderer.render(newTextureSprite, self.renderTexture, true, null, false);
 
 			self.undo.reset();
+
+			// reset viewport will update the ticker and refresh the view, 
+			// so we don't have to do it again.
 			self.resetViewport();
 			if (callback) {
 				callback();
@@ -294,7 +322,7 @@ class Artwork {
 
 		const snapshotTexture = this._copyRenderTexture();
 		this.renderTexture.resize(width, height, true);
-		this.app.renderer.render(new PIXI.Sprite(snapshotTexture), this.renderTexture, true, null, false)
+		this.render(new PIXI.Sprite(snapshotTexture), this.renderTexture, true);
 		this.addUndoable('RESIZE', {
 			width,
 			height
@@ -318,7 +346,7 @@ class Artwork {
 		stretchedSnapshot.scale.x = width / this.renderTexture.width;
 		stretchedSnapshot.scale.y = height / this.renderTexture.height;
 		this.renderTexture.resize(width, height, true);
-		this.app.renderer.render(stretchedSnapshot, this.renderTexture, true, null, false)
+		this.render(stretchedSnapshot, this.renderTexture, true);
 		this.addUndoable('STRETCH', {
 			width,
 			height
@@ -330,7 +358,7 @@ class Artwork {
 		const mirrored = new PIXI.Sprite(snapshotTexture);
 		mirrored.scale.x = -1
 		mirrored.position.x = this.renderTexture.width;
-		this.app.renderer.render(mirrored, this.renderTexture, true, null, false)
+		this.render(mirrored, this.renderTexture, true);
 		this.addUndoable('MIRROR', undefined, false);
 	}
 
@@ -339,7 +367,7 @@ class Artwork {
 		const mirrored = new PIXI.Sprite(snapshotTexture);
 		mirrored.scale.y = -1
 		mirrored.position.y = this.renderTexture.height;
-		this.app.renderer.render(mirrored, this.renderTexture, true, null, false)
+		this.render(mirrored, this.renderTexture, true);
 		this.addUndoable('FLIP', undefined, false);
 	}
 
@@ -356,6 +384,9 @@ class Artwork {
 		}
 		if (this.dragging) {
 			this.currentTool.move(this.app.renderer, this.renderTexture, event, this);
+			// TODO: we can make this more efficient by only calling update on the tools that actually perform
+			// a render. This involves restructuring some logic, though.
+			this.app.ticker.update();
 		}
 	}
 
@@ -365,6 +396,9 @@ class Artwork {
 		}
 		this.dragging = true;
 		this.currentTool.begin(this.app.renderer, this.renderTexture, event, this);
+		// TODO: we can make this more efficient by only calling update on the tools that actually perform
+			// a render. This involves restructuring some logic, though.
+		this.app.ticker.update();
 	}
 
 	pointerUp(event) {
@@ -379,8 +413,10 @@ class Artwork {
 		if (!this.renderTextureSprite) {
 			return;
 		}
-
 		this.currentTool.end(this.app.renderer, this.renderTexture, event, this);
+		// TODO: we can make this more efficient by only calling update on the tools that actually perform
+		// a render. This involves restructuring some logic, though.
+		this.app.ticker.update();
 	}
 
 	setToSnapshot(texture) {
@@ -388,7 +424,7 @@ class Artwork {
 		if (this.renderTexture.width !== texture.width || this.renderTexture.height !== texture.height) {
 			this.renderTexture.resize(texture.width, texture.height, true);
 		}
-		this.app.renderer.render(newTextureSprite, this.renderTexture, true, null, false);
+		this.render(newTextureSprite, this.renderTexture, true);
 	}
 
 	addUndoable(toolName, op, createSnapshot) {
@@ -406,6 +442,12 @@ class Artwork {
 
 		// TODO: apply saved operation per tool.
 		tool.applyOperation(op.operation, this.app.renderer, this.renderTexture);
+		this.app.ticker.update();
+	}
+
+	render(obj, texture, redraw) {
+		this.app.renderer.render(obj, texture, redraw, null, false);
+		this.app.ticker.update();
 	}
 }
 

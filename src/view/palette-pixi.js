@@ -2,7 +2,8 @@ import { colors } from '../palette/raw_colors.js'
 import storeSingleton from '../foundation/store.js';
 
 class Swatch {
-	constructor(shader, index, color, width, height) {
+	constructor(app, shader, index, color, width, height) {
+		this.app = app;
 		this.isSelected = undefined;
 		
 		this.swatchWidth = width;
@@ -39,6 +40,7 @@ class Swatch {
 		} else {
 			this.drawUnselected();
 		}
+		this.app.ticker.update();
 	}
 
 	getGraphic() {
@@ -70,8 +72,11 @@ class Palette {
 		this.app = new PIXI.Application({
 			width: colors.length * this.swatchWidth + 2,
 			height: this.selectedHeight,
-			backgroundColor: 0x000000
+			backgroundColor: 0x000000,
+			autoStart: false
 		});
+
+		this.app.ticker.update();
 
 		element.appendChild(this.app.view);
 
@@ -81,8 +86,9 @@ class Palette {
 	}
 
 	createSwatch(index, color) {
-		const swatch = new Swatch(this.shader, index, color, this.swatchWidth, this.swatchHeight);
+		const swatch = new Swatch(this.app, this.shader, index, color, this.swatchWidth, this.swatchHeight);
 		this.app.stage.addChild(swatch.getGraphic())
+		this.app.ticker.update();
 	}
 
 	_onLoadResources(res) {
