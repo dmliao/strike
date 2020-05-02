@@ -37,6 +37,6 @@ However, if you want to edit the app, it might be useful to install dependencies
 
 **npm run vendor** - takes the minified third-party dependencies from `node_modules` and copies them to the `src/vendor` folder, where they're consumed by the app
 
-**npm run pwa** - generates splash screens and icons for making Strike into a progressive web app. I usually run `./tools/compress.js` afterwards to further compress the images down.
+**npm run pwa** - generates splash screens and icons for making Strike into a progressive web app. I usually run `./tools/compress.js` afterwards to further compress the images down. Note that the compress tool requires you to have Graphicsmagick (exposed as `gm`) on the path.
 
-**npm run zip** - packages the app into a zip file for distribution as a download.
+**npm run zip** - packages the app into a zip file for distribution as a download. Note that this tool assumes you have 7zip (exposed as `7z`) on the path.
