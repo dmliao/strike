@@ -5,6 +5,7 @@ import store from './foundation/store.js';
 import Layout from './view/layout.js';
 import Artwork from './frame/artwork.js';
 import Palette from './view/palette-pixi.js';
+import setupKeyboardShortcuts from './frame/keyboard.js';
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.RENDER_OPTIONS.antialias = false;
@@ -37,6 +38,8 @@ store.subscribe('dirty', () => {
 store.update('eraser.size', 8);
 store.update('tool', 'PAINT');
 store.update('color', 0xffffff);
+
+setupKeyboardShortcuts();
 
 // load resources
 PIXI.Loader.shared.add('shader', 'src/shaders/shader.frag')
