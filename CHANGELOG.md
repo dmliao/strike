@@ -1,3 +1,7 @@
+# 0.2.1
+
+* Fix bug where changing brush size and then setting brush size back to 1 would cause it to be offset by a pixel.
+
 # 0.2.0
 
 * Added `image-rendering: optimizeSpeed;` to the canvas CSS so that the canvas remains sharp on Firefox
