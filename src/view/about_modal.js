@@ -4,7 +4,7 @@ import storeSingleton from '../foundation/store.js';
 
 const AboutModal = (props) => {
 	return (html`<${Modal} id="about">
-		<h1>Strike <small>v0.2.0</small></h1>
+		<h1>Strike <small>v0.2.1</small></h1>
 		<p>a 1-bit painting app</p>
 		<p>written by <a href="https://amorphic.space">Amorphous</a></p>
 		<hr />
