@@ -1,8 +1,8 @@
-import store from "../foundation/store.js"
+import store from '../foundation/store.js'
 
 const setupKeyboardShortcuts = () => {
 	const shortcuts = {
-		'ctrl-z': () => { 
+		'ctrl-z': () => {
 			if (store.get('can_undo')) {
 				store.publish('undo')
 			}
@@ -12,10 +12,18 @@ const setupKeyboardShortcuts = () => {
 				store.publish('redo')
 			}
 		},
+		'ctrl-y': () => {
+			if (store.get('can_redo')) {
+				store.publish('redo')
+			}
+		},
 	}
 	document.addEventListener('keydown', (e) => {
-		let keySequence = '';
-		if (e.ctrlKey) {
+		let keySequence = ''
+
+		// metakey to get mac os cmd to work
+		// see https://stackoverflow.com/a/3922353
+		if (e.ctrlKey || e.metaKey) {
 			keySequence += 'ctrl-'
 		}
 
@@ -24,13 +32,13 @@ const setupKeyboardShortcuts = () => {
 		}
 
 		if (e.key) {
-			keySequence += e.key.toLowerCase();
+			keySequence += e.key.toLowerCase()
 		}
-		
+
 		if (shortcuts[keySequence]) {
-			shortcuts[keySequence]();
+			shortcuts[keySequence]()
 		}
-	});
+	})
 }
 
-export default setupKeyboardShortcuts;
+export default setupKeyboardShortcuts
