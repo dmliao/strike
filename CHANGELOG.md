@@ -1,3 +1,7 @@
+# 0.3.0
+
+* Add keyboard shortcuts for undo and redo.
+
 # 0.2.1
 
 * Fix bug where changing brush size and then setting brush size back to 1 would cause it to be offset by a pixel.
